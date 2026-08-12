@@ -5,4 +5,13 @@ site/.vitepress/generated/
 site/public/feed.xml
 site/public/sitemap.xml
 backups/
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+.npmrc
+.secrets/
+.idea/
+.vscode/
 .DS_Store

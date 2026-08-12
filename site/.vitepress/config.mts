@@ -1,6 +1,7 @@
 import { fileURLToPath } from 'node:url'
 import { defineConfig } from 'vitepress'
 import { buildKnowledgeNetwork, buildSidebar, CATEGORY_OPTIONS, loadNotes } from '../../scripts/content-index.mjs'
+import { createSeoHead } from '../../scripts/site-seo.mjs'
 
 const siteDir = fileURLToPath(new URL('..', import.meta.url))
 const base = '/gitpagewebnote/'
@@ -46,11 +47,15 @@ export default async () => {
     },
     transformHead: (context) => {
       const note = network.notes.find((entry) => entry.sourcePath === context.pageData.relativePath)
-      if (!note) return []
-      const image = `https://benjamindaoson.github.io${base}social/${note.sourcePath.replace(/\//g, '--').replace(/\.md$/, '')}.svg`
-      const canonical = `https://benjamindaoson.github.io${base.replace(/\/$/, '')}${note.url}`
-      const schema = JSON.stringify({ '@context': 'https://schema.org', '@type': 'Article', headline: note.title, description: note.description, datePublished: note.date, dateModified: note.updated, mainEntityOfPage: canonical })
-      return [['link', { rel: 'canonical', href: canonical }], ['meta', { property: 'og:title', content: note.title }], ['meta', { property: 'og:description', content: note.description }], ['meta', { property: 'og:image', content: image }], ['meta', { name: 'twitter:card', content: 'summary_large_image' }], ['script', { type: 'application/ld+json' }, schema]]
+      const path = context.pageData.relativePath === 'index.md' ? '/' : `/${context.pageData.relativePath.replace(/\.md$/, '').replace(/\/index$/, '/')}`
+      return createSeoHead({
+        siteUrl: 'https://benjamindaoson.github.io/gitpagewebnote',
+        path: note?.url || path,
+        title: note?.title || context.pageData.title || 'Benjamin 的 AI 笔记',
+        description: note?.description || context.pageData.description || 'AI、Python 与工程实践知识库。',
+        image: note ? `/social/${note.sourcePath.replace(/\//g, '--').replace(/\.md$/, '')}.svg` : '/social/site.svg',
+        article: note ? { date: note.date, updated: note.updated } : null
+      })
     },
 
     themeConfig: {
@@ -59,7 +64,7 @@ export default async () => {
         { text: '首页', link: '/' },
         { text: 'Python', link: '/python/' },
         { text: 'LangChain', link: '/langchain/' },
-        { text: 'LangGraph', link: '/langgraph/00-environment' },
+        { text: 'LangGraph', link: '/langgraph/' },
         { text: 'AI Coding', link: '/ai-coding/' },
         {
           text: '学习索引',

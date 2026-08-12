@@ -162,9 +162,13 @@
 .reading-complete { display: block; margin: 1rem 0 2rem; padding: .8rem 1rem; border-radius: 10px; background: var(--vp-c-brand-soft); color: var(--vp-c-text-1); }
 .helpful-feedback button { margin-left: .45rem; border: 1px solid var(--vp-c-divider); border-radius: 999px; padding: .25rem .65rem; background: var(--vp-c-bg-soft); cursor: pointer; }
 .knowledge-map svg { width: 100%; min-height: 360px; border: 1px solid var(--vp-c-divider); border-radius: 12px; background: var(--vp-c-bg-soft); }
+.knowledge-map__filters { display: flex; flex-wrap: wrap; gap: 1rem; margin: 1rem 0; }.knowledge-map__filters select { margin-left: .35rem; padding: .25rem; border: 1px solid var(--vp-c-divider); border-radius: 6px; background: var(--vp-c-bg); }
 .knowledge-map__edge { stroke: var(--vp-c-text-3); stroke-width: 2; }
+.knowledge-map__edge--muted { opacity: .15; }
 .knowledge-map__node { fill: var(--vp-c-brand-1); } .knowledge-map__node--python { fill: #16a34a; } .knowledge-map__node--langchain { fill: #ca8a04; } .knowledge-map__node--langgraph { fill: #2563eb; } .knowledge-map__node--ai-coding { fill: #9333ea; }
+.knowledge-map__node--muted { opacity: .2; }.knowledge-map a:focus .knowledge-map__node { stroke: var(--vp-c-text-1); stroke-width: 5; outline: none; }
 .knowledge-map__label { fill: white; font-size: 15px; pointer-events: none; }
+.knowledge-map__fallback { margin-top: 1.5rem; }.knowledge-map__fallback h2 { font-size: 1.1rem; }
 .save-note, .note-card button { margin: .5rem 0; border: 1px solid var(--vp-c-divider); border-radius: 8px; padding: .35rem .65rem; background: var(--vp-c-bg-soft); cursor: pointer; }
 .article-tools, .learning-filters { display: flex; flex-wrap: wrap; gap: .55rem; align-items: center; margin: 1.25rem 0; }
 .article-tools input { max-width: 12rem; padding: .35rem .5rem; border: 1px solid var(--vp-c-divider); border-radius: 6px; }

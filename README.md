@@ -113,6 +113,15 @@ sources:
 
 `templates/` 中提供教程、踩坑记录、项目复盘、工具对比和源码解读五类模板。
 
+### 内容健康与批量导入
+
+```powershell
+npm run content:report                 # 待复核、无来源、孤立文章报告
+npm run note:import-folder -- "D:\我的笔记" # 逐篇交互式批量导入
+```
+
+读者可在“我的学习”中查看本机的已完成与稍后阅读内容。文章同时生成 canonical、Open Graph、Twitter 卡片与 JSON-LD 结构化数据。
+
 站点默认提供 RSS 订阅和 GitHub Issues 反馈入口。若要启用免费的 GoatCounter 访问统计和 Giscus 评论，请先分别创建服务并把它们给出的公开标识填入 `site/.vitepress/theme/engagement.mjs`：
 
 1. 在 [GoatCounter](https://www.goatcounter.com/) 创建站点，将站点代码填入 `goatCounterCode`。

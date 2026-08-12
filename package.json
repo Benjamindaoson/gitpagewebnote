@@ -8,6 +8,8 @@
     "content:check": "node scripts/validate-content.mjs",
     "content:generate": "node scripts/generate-content.mjs",
     "note:import": "node scripts/import-note.mjs",
+    "note:import-folder": "node scripts/import-folder.mjs",
+    "content:report": "node scripts/content-report.mjs",
     "docs:dev": "npm run content:check && npm run content:generate && vitepress dev site",
     "docs:build": "npm run content:check && npm run content:generate && vitepress build site",
     "docs:preview": "vitepress preview site"

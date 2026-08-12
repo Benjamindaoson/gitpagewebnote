@@ -5,6 +5,7 @@ import noteIndex from '../../generated/note-index.json'
 
 const { page } = useData()
 const note = computed(() => noteIndex.notes.find((entry) => entry.sourcePath === page.value.relativePath))
+const saved = computed({ get: () => typeof window !== 'undefined' && note.value ? localStorage.getItem(`benjamin-note-saved:${note.value.sourcePath}`) === 'true' : false, set: (value) => typeof window !== 'undefined' && note.value && localStorage.setItem(`benjamin-note-saved:${note.value.sourcePath}`, String(value)) })
 </script>
 
 <template>
@@ -15,6 +16,7 @@ const note = computed(() => noteIndex.notes.find((entry) => entry.sourcePath ===
       <span v-if="note.updated !== note.date">更新于 {{ note.updated }}</span>
       <span>阅读时长 {{ note.readingMinutes }} 分钟</span>
     </div>
+    <button class="save-note" type="button" @click="saved = !saved">{{ saved ? '已加入稍后阅读' : '加入稍后阅读' }}</button>
 
     <section v-if="note.series" class="article-panel">
       <p class="article-panel__eyebrow">课程路径</p>

@@ -165,6 +165,7 @@
 .knowledge-map__edge { stroke: var(--vp-c-text-3); stroke-width: 2; }
 .knowledge-map__node { fill: var(--vp-c-brand-1); } .knowledge-map__node--python { fill: #16a34a; } .knowledge-map__node--langchain { fill: #ca8a04; } .knowledge-map__node--langgraph { fill: #2563eb; } .knowledge-map__node--ai-coding { fill: #9333ea; }
 .knowledge-map__label { fill: white; font-size: 15px; pointer-events: none; }
+.save-note, .note-card button { margin: .5rem 0; border: 1px solid var(--vp-c-divider); border-radius: 8px; padding: .35rem .65rem; background: var(--vp-c-bg-soft); cursor: pointer; }
 
 .vp-doc img {
   cursor: zoom-in;

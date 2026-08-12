@@ -48,7 +48,9 @@ export default async () => {
       const note = network.notes.find((entry) => entry.sourcePath === context.pageData.relativePath)
       if (!note) return []
       const image = `${base}social/${note.sourcePath.replace(/\//g, '--').replace(/\.md$/, '')}.svg`
-      return [['meta', { property: 'og:image', content: image }], ['meta', { name: 'twitter:card', content: 'summary_large_image' }]]
+      const canonical = `https://benjamindaoson.github.io${base.replace(/\/$/, '')}${note.url}`
+      const schema = JSON.stringify({ '@context': 'https://schema.org', '@type': 'Article', headline: note.title, description: note.description, datePublished: note.date, dateModified: note.updated, mainEntityOfPage: canonical })
+      return [['link', { rel: 'canonical', href: canonical }], ['meta', { property: 'og:title', content: note.title }], ['meta', { property: 'og:description', content: note.description }], ['meta', { property: 'og:image', content: image }], ['meta', { name: 'twitter:card', content: 'summary_large_image' }], ['script', { type: 'application/ld+json' }, schema]]
     },
 
     themeConfig: {
@@ -68,6 +70,7 @@ export default async () => {
             { text: '年度归档', link: '/archive/' },
             { text: '学习路径', link: '/learning-paths/' },
             { text: '知识地图', link: '/knowledge-map/' }
+            , { text: '我的学习', link: '/my-learning/' }
           ]
         }
       ],

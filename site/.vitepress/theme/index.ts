@@ -3,6 +3,7 @@ import BrowseNotes from './components/BrowseNotes.vue'
 import CoursePaths from './components/CoursePaths.vue'
 import KnowledgeMap from './components/KnowledgeMap.vue'
 import ReadingProgress from './components/ReadingProgress.vue'
+import MyLearning from './components/MyLearning.vue'
 import RecentNotes from './components/RecentNotes.vue'
 import Layout from './Layout.vue'
 import './custom.css'
@@ -15,6 +16,7 @@ export default {
     app.component('CoursePaths', CoursePaths)
     app.component('KnowledgeMap', KnowledgeMap)
     app.component('ReadingProgress', ReadingProgress)
+    app.component('MyLearning', MyLearning)
     app.component('RecentNotes', RecentNotes)
   }
 }

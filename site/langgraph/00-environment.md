@@ -1,3 +1,12 @@
+---
+title: 00 · 环境配置
+category: langgraph
+tags: [LangGraph, Python, 环境配置]
+date: 2026-08-12
+description: 为 LangGraph 学习和实验准备隔离、可复现的 Python 环境。
+difficulty: beginner
+---
+
 # 00. 环境配置
 
 > 从零开始，为 LangGraph 学习和实验准备一个隔离、可复现的 Python 环境。

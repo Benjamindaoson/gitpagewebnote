@@ -1,4 +1,7 @@
 node_modules/
 site/.vitepress/cache/
 site/.vitepress/dist/
+site/.vitepress/generated/
+site/public/feed.xml
+site/public/sitemap.xml
 .DS_Store

@@ -1,3 +1,9 @@
+---
+title: Python 笔记
+page: category
+description: Python 学习和工程实践笔记。
+---
+
 # Python 笔记
 
 这里收集 Python 学习和工程实践笔记。

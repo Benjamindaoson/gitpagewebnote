@@ -1,3 +1,9 @@
+---
+title: AI Coding 笔记
+page: category
+description: 将 AI 助手可靠地引入软件开发流程。
+---
+
 # AI Coding 笔记
 
 这里记录如何把 AI 助手可靠地引入软件开发流程。

@@ -30,3 +30,5 @@ features:
 4. 提交并推送代码，站点会自动更新。
 
 更多细节请阅读仓库根目录的 `README.md`。
+
+<RecentNotes />

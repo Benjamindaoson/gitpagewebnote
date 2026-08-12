@@ -1,3 +1,9 @@
+---
+title: LangChain 笔记
+page: category
+description: LangChain 的核心概念、组件选型和项目经验。
+---
+
 # LangChain 笔记
 
 这里记录 LangChain 的核心概念、组件选型和实际项目经验。

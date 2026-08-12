@@ -5,11 +5,15 @@
   "type": "module",
   "scripts": {
     "test": "node --test",
-    "docs:dev": "vitepress dev site",
-    "docs:build": "vitepress build site",
+    "content:check": "node scripts/validate-content.mjs",
+    "content:generate": "node scripts/generate-content.mjs",
+    "note:import": "node scripts/import-note.mjs",
+    "docs:dev": "npm run content:check && npm run content:generate && vitepress dev site",
+    "docs:build": "npm run content:check && npm run content:generate && vitepress build site",
     "docs:preview": "vitepress preview site"
   },
   "devDependencies": {
+    "gray-matter": "^4.0.3",
     "vitepress": "^1.6.4"
   }
 }

@@ -1,3 +1,12 @@
+---
+title: 01 · LangGraph 基础入门
+category: langgraph
+tags: [LangGraph, Agent, 状态图]
+date: 2026-08-12
+description: 理解 LangGraph 的 State、Node 和 Edge 三个基础概念。
+difficulty: beginner
+---
+
 # 01. LangGraph 基础入门
 
 LangGraph 适合把多步骤 AI 工作流表达为可控的状态图。

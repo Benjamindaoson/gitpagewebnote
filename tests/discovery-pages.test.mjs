@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict'
-import { access } from 'node:fs/promises'
+import { access, readFile } from 'node:fs/promises'
 import { spawnSync } from 'node:child_process'
 import { join } from 'node:path'
 import test from 'node:test'
@@ -19,9 +19,13 @@ test('builds discovery pages and static subscription artifacts', async () => {
     'categories/index.html',
     'tags/index.html',
     'archive/index.html',
+    'learning-paths/index.html',
     'feed.xml',
     'sitemap.xml'
   ]) {
     await assert.doesNotReject(access(join(output, file)), `Missing built artifact: ${file}`)
   }
+  const environmentPage = await readFile(join(output, 'langgraph', '00-environment.html'), 'utf8')
+  assert.match(environmentPage, /阅读时长/)
+  assert.match(environmentPage, /href="\/gitpagewebnote\/langgraph\/01-introduction"/)
 })

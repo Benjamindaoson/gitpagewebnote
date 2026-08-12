@@ -3,13 +3,22 @@ title: 00 · 环境配置
 category: langgraph
 tags: [LangGraph, Python, 环境配置]
 date: 2026-08-12
+updated: 2026-08-12
+featured: true
 description: 为 LangGraph 学习和实验准备隔离、可复现的 Python 环境。
 difficulty: beginner
+series: LangGraph 入门路径
+seriesOrder: 1
+changeLog:
+  - date: 2026-08-12
+    summary: 首次整理环境配置与虚拟环境步骤。
 ---
 
 # 00. 环境配置
 
 > 从零开始，为 LangGraph 学习和实验准备一个隔离、可复现的 Python 环境。
+
+完成环境配置后，继续阅读 [[01 · LangGraph 基础入门]]。
 
 ## 1. 安装 Python
 

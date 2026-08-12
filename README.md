@@ -84,6 +84,31 @@ npm run docs:preview    # 本地预览构建结果
 - `/feed.xml`：RSS 订阅
 - `/sitemap.xml`：搜索引擎站点地图
 
+## 发布预览、知识网络与读者互动
+
+导入器写入 Markdown 和图片后，会先显示目标文件、栏目、标签、图片数量及新增文件清单。接着依次用编号选择是否启动本地预览、创建 Git 提交、推送到 GitHub Pages；任何一步选择“不继续”都只保留本地文件。
+
+文章可选使用以下字段：
+
+```yaml
+updated: 2026-08-12
+featured: true
+series: LangGraph 入门路径
+seriesOrder: 1
+changeLog:
+  - date: 2026-08-12
+    summary: 增加环境变量排错说明。
+```
+
+正文中的 `[[文章标题]]` 或 `[[文章标题|显示文字]]` 会生成站内双链；页面自动显示反向链接、相关文章和课程的上一篇/下一篇。标题必须唯一，双链不能指向草稿，系列序号不能重复。
+
+站点默认提供 RSS 订阅和 GitHub Issues 反馈入口。若要启用免费的 GoatCounter 访问统计和 Giscus 评论，请先分别创建服务并把它们给出的公开标识填入 `site/.vitepress/theme/engagement.mjs`：
+
+1. 在 [GoatCounter](https://www.goatcounter.com/) 创建站点，将站点代码填入 `goatCounterCode`。
+2. 在 GitHub 仓库启用 Discussions，按 [Giscus 配置页](https://giscus.app/zh-CN) 为本仓库创建 Discussion 分类；将 `repo`、`repoId`、`category`、`categoryId` 填入 `giscus`。
+
+这些值是前端公开标识，不要填入 GitHub Token、密码或任何私密密钥。空值表示关闭，站点仍可正常构建和运行。
+
 ## GitHub Pages 发布
 
 推送到 `main` 后，`.github/workflows/deploy.yml` 会先执行内容校验与测试，再构建和发布。首次配置已使用 **Settings → Pages → GitHub Actions** 完成。

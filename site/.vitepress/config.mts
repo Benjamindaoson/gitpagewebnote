@@ -1,11 +1,33 @@
 import { fileURLToPath } from 'node:url'
 import { defineConfig } from 'vitepress'
-import { buildSidebar, CATEGORY_OPTIONS, loadNotes } from '../../scripts/content-index.mjs'
+import { buildKnowledgeNetwork, buildSidebar, CATEGORY_OPTIONS, loadNotes } from '../../scripts/content-index.mjs'
 
 const siteDir = fileURLToPath(new URL('..', import.meta.url))
+const base = '/gitpagewebnote/'
+
+function wikiLinkPlugin(markdown: any, urls: Map<string, string>) {
+  markdown.inline.ruler.before('emphasis', 'note-wiki-link', (state: any, silent: boolean) => {
+    if (state.src.slice(state.pos, state.pos + 2) !== '[[') return false
+    const end = state.src.indexOf(']]', state.pos + 2)
+    if (end === -1) return false
+    const [titlePart, labelPart] = state.src.slice(state.pos + 2, end).split('|', 2)
+    const title = titlePart.trim()
+    const url = urls.get(title)
+    if (!url) return false
+    if (!silent) {
+      const open = state.push('link_open', 'a', 1)
+      open.attrSet('href', url)
+      state.push('text', '', 0).content = (labelPart || title).trim()
+      state.push('link_close', 'a', -1)
+    }
+    state.pos = end + 2
+    return true
+  })
+}
 
 export default async () => {
   const notes = await loadNotes({ siteDir })
+  const network = buildKnowledgeNetwork(notes)
   const sidebar = buildSidebar(notes)
 
   for (const { value, label } of CATEGORY_OPTIONS) {
@@ -16,9 +38,12 @@ export default async () => {
     lang: 'zh-CN',
     title: 'Benjamin 的 AI 笔记',
     description: 'AI、Python 与工程实践笔记',
-    base: '/gitpagewebnote/',
+    base,
     cleanUrls: true,
     lastUpdated: true,
+    markdown: {
+      config: (markdown) => wikiLinkPlugin(markdown, new Map(network.notes.map((note) => [note.title, note.url])))
+    },
 
     themeConfig: {
       siteTitle: 'Benjamin 的 AI 笔记',
@@ -35,6 +60,7 @@ export default async () => {
             { text: '分类浏览', link: '/categories/' },
             { text: '标签浏览', link: '/tags/' },
             { text: '年度归档', link: '/archive/' }
+            , { text: '学习路径', link: '/learning-paths/' }
           ]
         }
       ],
@@ -71,7 +97,7 @@ export default async () => {
         { icon: 'github', link: 'https://github.com/Benjamindaoson/gitpagewebnote' }
       ],
       footer: {
-        message: '使用 Markdown 与 VitePress 构建',
+        message: `使用 Markdown 与 VitePress 构建 · <a href="${base}feed.xml">订阅 RSS</a> · <a href="https://github.com/Benjamindaoson/gitpagewebnote/issues/new/choose">反馈</a>`,
         copyright: 'Copyright © 2026 Benjamin Daoson'
       }
     }

@@ -124,7 +124,7 @@ async function loadAllNotes({ siteDir }) {
     })
   }
 
-  return notes.sort((left, right) => right.updated.localeCompare(left.updated) || left.title.localeCompare(right.title, 'zh-CN'))
+  return notes.sort((left, right) => Number(right.featured) - Number(left.featured) || right.updated.localeCompare(left.updated) || left.title.localeCompare(right.title, 'zh-CN'))
 }
 
 export async function loadNotes({ siteDir }) {

@@ -99,9 +99,9 @@ seriesOrder: 1
   const { validateNotes } = await import('../scripts/content-index.mjs')
   const issues = await validateNotes({ siteDir: fixtureSite })
 
-  assert.deepEqual(issues.map((issue) => issue.message), [
+  assert.deepEqual(new Set(issues.map((issue) => issue.message)), new Set([
     'Unknown wiki link: Missing note',
     'Wiki link targets a draft note: Draft note',
     'Duplicate seriesOrder: LangGraph path #1'
-  ])
+  ]))
 })

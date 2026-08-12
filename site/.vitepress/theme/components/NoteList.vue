@@ -8,6 +8,8 @@ type Note = {
   date: string
   description: string
   difficulty: string
+  updated: string
+  featured: boolean
   url: string
   readingMinutes: number
 }
@@ -23,7 +25,9 @@ defineProps<{
   <div v-else class="note-list">
     <article v-for="note in notes" :key="note.url" class="note-card">
       <p class="note-card__meta">
+        <span v-if="note.featured" class="article-badge">精选</span>
         <span>{{ note.date }}</span>
+        <span v-if="note.updated !== note.date">更新于 {{ note.updated }}</span>
         <span>{{ note.readingMinutes }} 分钟阅读</span>
         <span v-if="note.difficulty">{{ note.difficulty }}</span>
       </p>

@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import DefaultTheme from 'vitepress/theme'
 import { onMounted, onUnmounted, ref } from 'vue'
+import ArticleEnhancements from './components/ArticleEnhancements.vue'
+import EngagementWidgets from './components/EngagementWidgets.vue'
 
 const readingProgress = ref(0)
 const expandedImage = ref('')
@@ -32,7 +34,12 @@ onUnmounted(() => {
 
 <template>
   <div class="reading-progress" :style="{ transform: `scaleX(${readingProgress / 100})` }" aria-hidden="true" />
-  <DefaultTheme.Layout />
+  <DefaultTheme.Layout>
+    <template #doc-after>
+      <ArticleEnhancements />
+      <EngagementWidgets />
+    </template>
+  </DefaultTheme.Layout>
   <button
     v-if="expandedImage"
     class="image-lightbox"

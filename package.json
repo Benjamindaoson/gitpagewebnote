@@ -1,0 +1,15 @@
+{
+  "name": "gitpagewebnote",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test",
+    "docs:dev": "vitepress dev site",
+    "docs:build": "vitepress build site",
+    "docs:preview": "vitepress preview site"
+  },
+  "devDependencies": {
+    "vitepress": "^1.6.4"
+  }
+}

@@ -4,6 +4,7 @@ category: langgraph
 tags: [LangGraph]
 date: 2026-08-12
 updated: 2026-08-12
+publishAt:
 description: 用一句话说明这篇笔记解决的问题。
 difficulty: beginner
 featured: false
@@ -11,6 +12,8 @@ draft: false
 series: ''
 seriesOrder:
 changeLog: []
+appliesTo: ''
+sources: []
 ---
 
 # 文章标题

@@ -33,6 +33,12 @@ const note = computed(() => noteIndex.notes.find((entry) => entry.sourcePath ===
       </ul>
     </section>
 
+    <section v-if="note.appliesTo || note.sources.length" class="article-panel">
+      <h2>适用版本与引用</h2>
+      <p v-if="note.appliesTo">适用版本：{{ note.appliesTo }}</p>
+      <ul v-if="note.sources.length"><li v-for="source in note.sources" :key="source.url"><a :href="source.url" target="_blank" rel="noreferrer">{{ source.title }}</a><span v-if="source.verified">（核验：{{ source.verified }}）</span></li></ul>
+    </section>
+
     <section v-if="note.wikiLinks.length || note.backlinks.length || note.relatedNotes.length" class="article-panel">
       <h2>知识关联</h2>
       <div v-if="note.wikiLinks.length">

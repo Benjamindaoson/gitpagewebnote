@@ -44,6 +44,12 @@ export default async () => {
     markdown: {
       config: (markdown) => wikiLinkPlugin(markdown, new Map(network.notes.map((note) => [note.title, note.url])))
     },
+    transformHead: (context) => {
+      const note = network.notes.find((entry) => entry.sourcePath === context.pageData.relativePath)
+      if (!note) return []
+      const image = `${base}social/${note.sourcePath.replace(/\//g, '--').replace(/\.md$/, '')}.svg`
+      return [['meta', { property: 'og:image', content: image }], ['meta', { name: 'twitter:card', content: 'summary_large_image' }]]
+    },
 
     themeConfig: {
       siteTitle: 'Benjamin 的 AI 笔记',
@@ -59,8 +65,9 @@ export default async () => {
             { text: '最近更新', link: '/updates/' },
             { text: '分类浏览', link: '/categories/' },
             { text: '标签浏览', link: '/tags/' },
-            { text: '年度归档', link: '/archive/' }
-            , { text: '学习路径', link: '/learning-paths/' }
+            { text: '年度归档', link: '/archive/' },
+            { text: '学习路径', link: '/learning-paths/' },
+            { text: '知识地图', link: '/knowledge-map/' }
           ]
         }
       ],

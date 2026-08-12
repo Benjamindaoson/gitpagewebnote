@@ -3,6 +3,7 @@ import DefaultTheme from 'vitepress/theme'
 import { onMounted, onUnmounted, ref } from 'vue'
 import ArticleEnhancements from './components/ArticleEnhancements.vue'
 import EngagementWidgets from './components/EngagementWidgets.vue'
+import ReadingProgress from './components/ReadingProgress.vue'
 
 const readingProgress = ref(0)
 const expandedImage = ref('')
@@ -37,6 +38,7 @@ onUnmounted(() => {
   <DefaultTheme.Layout>
     <template #doc-after>
       <ArticleEnhancements />
+      <ReadingProgress />
       <EngagementWidgets />
     </template>
   </DefaultTheme.Layout>

@@ -22,7 +22,7 @@ npm run note:import -- "D:\我的笔记\LangGraph 状态管理.md"
 3. 栏目：Python、LangChain、LangGraph 或 AI Coding。
 4. 标签：可一次选择多个编号，例如 `3,4`。
 5. 难度、发布日期和公开/草稿状态。
-6. 导入后操作：仅导入、导入并提交、导入并提交推送。
+6. 导入后会显示变更预览，并依次选择本地预览、提交和推送。
 
 选择“导入、提交并推送”后，GitHub Actions 会自动检查、构建并发布网站。
 
@@ -83,6 +83,7 @@ npm run docs:preview    # 本地预览构建结果
 - `/archive/`：按年份归档
 - `/feed.xml`：RSS 订阅
 - `/sitemap.xml`：搜索引擎站点地图
+- `/knowledge-map/`：按双链关系查看知识地图
 
 ## 发布预览、知识网络与读者互动
 
@@ -98,9 +99,19 @@ seriesOrder: 1
 changeLog:
   - date: 2026-08-12
     summary: 增加环境变量排错说明。
+publishAt: 2026-09-01
+appliesTo: LangGraph 1.x
+sources:
+  - title: 官方文档
+    url: https://example.com/docs
+    verified: 2026-08-12
 ```
 
 正文中的 `[[文章标题]]` 或 `[[文章标题|显示文字]]` 会生成站内双链；页面自动显示反向链接、相关文章和课程的上一篇/下一篇。标题必须唯一，双链不能指向草稿，系列序号不能重复。
+
+`publishAt` 为未来日期时，文章会保持隐藏；每日 GitHub Actions 会重新构建，在日期到达后自动公开。文章页提供“我已学完本篇”，完成状态只存入读者当前浏览器。`npm run content:check` 会提示超过 180 天未复核的公开内容，但不会阻止构建。
+
+`templates/` 中提供教程、踩坑记录、项目复盘、工具对比和源码解读五类模板。
 
 站点默认提供 RSS 订阅和 GitHub Issues 反馈入口。若要启用免费的 GoatCounter 访问统计和 Giscus 评论，请先分别创建服务并把它们给出的公开标识填入 `site/.vitepress/theme/engagement.mjs`：
 

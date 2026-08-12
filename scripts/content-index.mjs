@@ -41,6 +41,10 @@ function normalizeDate(value) {
   return typeof value === 'string' ? value : ''
 }
 
+function dateValue(value) {
+  return normalizeDate(value)
+}
+
 function routeFromRelativePath(relativePath) {
   return `/${relativePath.replace(/\\/g, '/').replace(/\.md$/, '').replace(/\/index$/, '/')}`.replace(/\/+/g, '/')
 }
@@ -70,6 +74,15 @@ function asChangeLog(value) {
     .filter((entry) => entry && typeof entry === 'object')
     .map((entry) => ({ date: normalizeDate(entry.date), summary: typeof entry.summary === 'string' ? entry.summary.trim() : '' }))
     .filter((entry) => entry.date && entry.summary)
+}
+
+function asSources(value) {
+  if (!Array.isArray(value)) return []
+  return value.filter((entry) => entry && typeof entry === 'object').map((entry) => ({
+    title: typeof entry.title === 'string' ? entry.title.trim() : '',
+    url: typeof entry.url === 'string' ? entry.url.trim() : '',
+    verified: dateValue(entry.verified)
+  })).filter((entry) => entry.title || entry.url || entry.verified)
 }
 
 function getWikiLinks(content) {
@@ -107,11 +120,14 @@ async function loadAllNotes({ siteDir }) {
       category: typeof parsed.data.category === 'string' ? parsed.data.category : '',
       tags: asArray(parsed.data.tags),
       date: normalizeDate(parsed.data.date),
+      publishAt: normalizeDate(parsed.data.publishAt),
       description: typeof parsed.data.description === 'string' ? parsed.data.description : '',
       difficulty: typeof parsed.data.difficulty === 'string' ? parsed.data.difficulty : '',
       updated: normalizeDate(parsed.data.updated) || normalizeDate(parsed.data.date),
       featured: parsed.data.featured === true,
       changeLog: asChangeLog(parsed.data.changeLog),
+      sources: asSources(parsed.data.sources),
+      appliesTo: typeof parsed.data.appliesTo === 'string' ? parsed.data.appliesTo.trim() : '',
       series: typeof parsed.data.series === 'string' ? parsed.data.series.trim() : '',
       seriesOrder: Number.isInteger(parsed.data.seriesOrder) ? parsed.data.seriesOrder : null,
       draft: parsed.data.draft === true,
@@ -127,8 +143,15 @@ async function loadAllNotes({ siteDir }) {
   return notes.sort((left, right) => Number(right.featured) - Number(left.featured) || right.updated.localeCompare(left.updated) || left.title.localeCompare(right.title, 'zh-CN'))
 }
 
-export async function loadNotes({ siteDir }) {
-  return (await loadAllNotes({ siteDir })).filter((note) => !note.draft)
+export async function loadNotes({ siteDir, now = new Date().toISOString().slice(0, 10) }) {
+  return (await loadAllNotes({ siteDir })).filter((note) => !note.draft && (!note.publishAt || note.publishAt <= now))
+}
+
+export async function findMaintenanceWarnings({ siteDir, now = new Date().toISOString().slice(0, 10), staleAfterDays = 180 }) {
+  const nowMs = Date.parse(`${now}T00:00:00Z`)
+  const notes = await loadNotes({ siteDir, now })
+  return notes.filter((note) => nowMs - Date.parse(`${note.updated}T00:00:00Z`) > staleAfterDays * 86400000)
+    .map((note) => ({ file: note.sourcePath, message: `内容超过 ${staleAfterDays} 天未复核：最后更新 ${note.updated}` }))
 }
 
 function asReference(note) {
@@ -220,6 +243,15 @@ export async function validateNotes({ siteDir }) {
 
     if (note.updated && !/^\d{4}-\d{2}-\d{2}$/.test(note.updated)) {
       issues.push({ file: note.sourcePath, message: 'Updated date must use YYYY-MM-DD format' })
+    }
+
+    if (note.publishAt && !/^\d{4}-\d{2}-\d{2}$/.test(note.publishAt)) {
+      issues.push({ file: note.sourcePath, message: 'publishAt must use YYYY-MM-DD format' })
+    }
+
+    for (const source of note.sources) {
+      if (!source.title || !/^https:\/\//i.test(source.url)) issues.push({ file: note.sourcePath, message: 'Each source requires a title and HTTPS URL' })
+      if (source.verified && !/^\d{4}-\d{2}-\d{2}$/.test(source.verified)) issues.push({ file: note.sourcePath, message: 'Source verified date must use YYYY-MM-DD format' })
     }
 
     if (note.series && (!Number.isInteger(note.seriesOrder) || note.seriesOrder < 1)) {

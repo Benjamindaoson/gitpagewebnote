@@ -42,6 +42,13 @@ function renderGiscus() {
   giscusScript = script
 }
 
+function openHelpFeedback(helpful: boolean) {
+  const url = new URL(engagement.feedbackUrl)
+  url.searchParams.set('title', helpful ? '内容有帮助' : '内容需要改进')
+  url.searchParams.set('body', `文章：${window.location.href}\n反馈：${helpful ? '有帮助' : '需要改进'}\n\n补充说明：`)
+  window.open(url, '_blank', 'noopener,noreferrer')
+}
+
 onMounted(() => {
   loadGoatCounter()
   watch(() => page.value.relativePath, async () => {
@@ -57,6 +64,7 @@ onBeforeUnmount(() => giscusScript?.remove())
   <section v-if="isArticle" class="engagement-widgets">
     <p class="engagement-widgets__title">订阅与反馈</p>
     <p><a :href="withBase('/feed.xml')">订阅 RSS 更新</a><span aria-hidden="true"> · </span><a :href="engagement.feedbackUrl" target="_blank" rel="noreferrer">提交反馈</a></p>
+    <p class="helpful-feedback">本页有帮助吗？ <button type="button" @click="openHelpFeedback(true)">有帮助</button><button type="button" @click="openHelpFeedback(false)">需要改进</button></p>
     <div v-if="isGiscusEnabled()" ref="giscusRoot" class="engagement-widgets__comments" aria-label="文章评论" />
   </section>
 </template>

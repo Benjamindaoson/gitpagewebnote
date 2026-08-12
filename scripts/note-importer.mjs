@@ -6,6 +6,20 @@ import { CATEGORY_OPTIONS } from './content-index.mjs'
 const supportedImageExtensions = new Set(['.png', '.jpg', '.jpeg', '.gif', '.webp', '.svg'])
 const imagePattern = /!\[([^\]]*)\]\(([^)\s]+)(\s+[^)]*)?\)/g
 
+export function recommendNoteMetadata(markdown) {
+  const content = String(markdown).toLowerCase()
+  const rules = [
+    { category: 'langgraph', tag: 'LangGraph', pattern: /langgraph|stategraph/ },
+    { category: 'langchain', tag: 'LangChain', pattern: /langchain|retriever|prompt template/ },
+    { category: 'python', tag: 'Python', pattern: /python|pip|pytest|pandas/ },
+    { category: 'ai-coding', tag: 'AI Coding', pattern: /cursor|copilot|ai coding|claude code/ }
+  ]
+  const matched = rules.filter((rule) => rule.pattern.test(content))
+  const category = matched[0]?.category || 'ai-coding'
+  const tags = [...new Set(matched.map((rule) => rule.tag).concat(/agent/.test(content) ? ['Agent'] : [], /rag|retriev/.test(content) ? ['RAG'] : []))]
+  return { category, tags, difficulty: /```|\bapi\b|stategraph|async/.test(content) ? 'intermediate' : 'beginner' }
+}
+
 function isWithin(parentPath, childPath) {
   const relativePath = relative(parentPath, childPath)
   return relativePath === '' || (!relativePath.startsWith(`..${sep}`) && relativePath !== '..')

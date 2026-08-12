@@ -1,7 +1,7 @@
 import { mkdir, writeFile } from 'node:fs/promises'
 import { dirname, resolve } from 'node:path'
 import { pathToFileURL } from 'node:url'
-import { groupNotes, loadNotes, validateNotes } from './content-index.mjs'
+import { buildKnowledgeNetwork, groupNotes, loadNotes, validateNotes } from './content-index.mjs'
 
 function asPublicNote(note) {
   return {
@@ -11,6 +11,16 @@ function asPublicNote(note) {
     date: note.date,
     description: note.description,
     difficulty: note.difficulty,
+    updated: note.updated,
+    featured: note.featured,
+    changeLog: note.changeLog,
+    series: note.series,
+    seriesOrder: note.seriesOrder,
+    wikiLinks: note.wikiLinks,
+    backlinks: note.backlinks,
+    relatedNotes: note.relatedNotes,
+    seriesPrevious: note.seriesPrevious,
+    seriesNext: note.seriesNext,
     url: note.url,
     sourcePath: note.sourcePath,
     readingMinutes: note.readingMinutes
@@ -37,7 +47,7 @@ function createFeed(notes, siteUrl) {
       <link>${escapeXml(absoluteUrl(siteUrl, note.url))}</link>
       <guid>${escapeXml(absoluteUrl(siteUrl, note.url))}</guid>
       <description>${escapeXml(note.description)}</description>
-      <pubDate>${new Date(`${note.date}T00:00:00Z`).toUTCString()}</pubDate>
+      <pubDate>${new Date(`${note.updated}T00:00:00Z`).toUTCString()}</pubDate>
     </item>`).join('')
 
   return `<?xml version="1.0" encoding="UTF-8"?>
@@ -52,10 +62,10 @@ function createFeed(notes, siteUrl) {
 }
 
 function createSitemap(notes, siteUrl) {
-  const staticPaths = ['/', '/updates/', '/categories/', '/tags/', '/archive/']
+  const staticPaths = ['/', '/updates/', '/categories/', '/tags/', '/archive/', '/learning-paths/']
   const urls = [
     ...staticPaths.map((path) => ({ path, date: '' })),
-    ...notes.map((note) => ({ path: note.url, date: note.date }))
+    ...notes.map((note) => ({ path: note.url, date: note.updated }))
   ]
 
   const entries = urls.map(({ path, date }) => `
@@ -83,8 +93,9 @@ export async function generateContent({
     throw new Error(`Content validation failed:\n${details}`)
   }
 
-  const notes = (await loadNotes({ siteDir })).map(asPublicNote)
-  const index = { notes, ...groupNotes(notes) }
+  const network = buildKnowledgeNetwork(await loadNotes({ siteDir }))
+  const notes = network.notes.map(asPublicNote)
+  const index = { notes, ...groupNotes(notes), series: network.series }
 
   await mkdir(dirname(outputFile), { recursive: true })
   await writeFile(outputFile, `${JSON.stringify(index, null, 2)}\n`, 'utf8')

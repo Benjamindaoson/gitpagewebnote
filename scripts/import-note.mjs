@@ -6,7 +6,7 @@ import { promisify } from 'node:util'
 import { createInterface } from 'node:readline/promises'
 import matter from 'gray-matter'
 import { CATEGORY_OPTIONS, validateNotes } from './content-index.mjs'
-import { createImportPlan, writeImport } from './note-importer.mjs'
+import { createImportPlan, recommendNoteMetadata, writeImport } from './note-importer.mjs'
 
 const execFile = promisify(execFileCallback)
 const TAG_OPTIONS = ['Python', 'LangChain', 'LangGraph', 'Agent', 'RAG', 'AI Coding', '\u5de5\u7a0b\u5b9e\u8df5']
@@ -71,6 +71,24 @@ async function chooseTags(reader) {
   }
 }
 
+function withRecommendedFirst(options, recommendedValue) {
+  return options.map((option) => ({ ...option, label: option.value === recommendedValue ? `${option.label}（推荐）` : option.label }))
+}
+
+async function chooseRecommendedTags(reader, recommended) {
+  const options = TAG_OPTIONS.map((tag) => ({
+    value: tag,
+    label: recommended.includes(tag) ? `${tag}（推荐）` : tag
+  }))
+  console.log(`本地分析推荐标签：${recommended.join('、') || '无'}。可用逗号选择多个编号：\n${options.map((option, index) => `  ${index + 1}. ${option.label}`).join('\n')}`)
+  while (true) {
+    const answer = (await reader.question('请输入标签编号，例如 1,2：')).trim()
+    const selections = [...new Set(answer.split(',').map((value) => Number(value.trim())).filter(Number.isInteger))]
+    if (selections.length > 0 && selections.every((index) => index >= 1 && index <= options.length)) return selections.map((index) => options[index - 1].value)
+    console.log('请输入一个或多个有效的标签编号。')
+  }
+}
+
 async function chooseDate(reader) {
   const selection = await chooseOne(reader, '\u53d1\u5e03\u65e5\u671f', [
     { value: today(), label: `\u4f7f\u7528\u4eca\u5929\uff08${today()}\uff0c\u63a8\u8350\uff09` },
@@ -131,6 +149,7 @@ export async function runInteractiveImport(sourcePath, {
   const resolvedSourcePath = resolve(sourcePath)
   const source = await readFile(resolvedSourcePath, 'utf8')
   const detected = detectText(resolvedSourcePath, source)
+  const recommendation = recommendNoteMetadata(source)
   const reader = suppliedReader ?? createInterface({ input: process.stdin, output: process.stdout })
   const ownsReader = !suppliedReader
 
@@ -138,15 +157,17 @@ export async function runInteractiveImport(sourcePath, {
     console.log('\n\u5f00\u59cb\u5bfc\u5165\u7b14\u8bb0\u3002\u9664\u81ea\u5b9a\u4e49\u6807\u9898\u6216\u6458\u8981\u5916\uff0c\u6240\u6709\u8bbe\u7f6e\u5747\u4e3a\u7f16\u53f7\u9009\u62e9\u3002\n')
     const title = await chooseText(reader, '\u6807\u9898', detected.title)
     const description = await chooseText(reader, '\u6458\u8981', detected.description)
-    const category = await chooseOne(reader, '\u6240\u5c5e\u680f\u76ee', CATEGORY_OPTIONS)
-    const tags = await chooseTags(reader)
-    const difficulty = await chooseOne(reader, '\u96be\u5ea6', DIFFICULTY_OPTIONS)
+    const category = await chooseOne(reader, '\u6240\u5c5e\u680f\u76ee\uff08\u672c\u5730\u5206\u6790\u5df2\u5c06\u63a8\u8350\u9879\u6392\u5728\u9996\u4f4d\uff09', withRecommendedFirst(CATEGORY_OPTIONS, recommendation.category))
+    const tags = await chooseRecommendedTags(reader, recommendation.tags)
+    const difficulty = await chooseOne(reader, '\u96be\u5ea6', withRecommendedFirst(DIFFICULTY_OPTIONS, recommendation.difficulty))
     const date = await chooseDate(reader)
     const visibility = await chooseOne(reader, '\u7b14\u8bb0\u72b6\u6001', [
       { value: false, label: '\u516c\u5f00\u53d1\u5e03\uff08\u63a8\u8350\uff09' },
-      { value: true, label: '\u4fdd\u5b58\u4e3a\u8349\u7a3f\uff0c\u4e0d\u51fa\u73b0\u5728\u516c\u5f00\u5bfc\u822a\u4e2d' }
+      { value: true, label: '\u4fdd\u5b58\u4e3a\u8349\u7a3f\uff0c\u4e0d\u51fa\u73b0\u5728\u516c\u5f00\u5bfc\u822a\u4e2d' },
+      { value: 'scheduled', label: '\u5b9a\u65f6\u53d1\u5e03\uff0c\u5230\u6307\u5b9a\u65e5\u671f\u81ea\u52a8\u516c\u5f00' }
     ])
-    const metadata = { title, description, category: category.value, tags, difficulty: difficulty.value, date, draft: visibility.value }
+    const publishAt = visibility.value === 'scheduled' ? await chooseDate(reader) : ''
+    const metadata = { title, description, category: category.value, tags, difficulty: difficulty.value, date, publishAt, draft: visibility.value === true }
     const plan = await createImportPlan({ sourcePath: resolvedSourcePath, siteDir, metadata, base: '/gitpagewebnote/' })
     const result = await writeImport(plan)
     const issues = await validateNotes({ siteDir })

@@ -47,7 +47,7 @@ export default async () => {
     transformHead: (context) => {
       const note = network.notes.find((entry) => entry.sourcePath === context.pageData.relativePath)
       if (!note) return []
-      const image = `${base}social/${note.sourcePath.replace(/\//g, '--').replace(/\.md$/, '')}.svg`
+      const image = `https://benjamindaoson.github.io${base}social/${note.sourcePath.replace(/\//g, '--').replace(/\.md$/, '')}.svg`
       const canonical = `https://benjamindaoson.github.io${base.replace(/\/$/, '')}${note.url}`
       const schema = JSON.stringify({ '@context': 'https://schema.org', '@type': 'Article', headline: note.title, description: note.description, datePublished: note.date, dateModified: note.updated, mainEntityOfPage: canonical })
       return [['link', { rel: 'canonical', href: canonical }], ['meta', { property: 'og:title', content: note.title }], ['meta', { property: 'og:description', content: note.description }], ['meta', { property: 'og:image', content: image }], ['meta', { name: 'twitter:card', content: 'summary_large_image' }], ['script', { type: 'application/ld+json' }, schema]]

@@ -4,4 +4,5 @@ site/.vitepress/dist/
 site/.vitepress/generated/
 site/public/feed.xml
 site/public/sitemap.xml
+backups/
 .DS_Store

@@ -166,6 +166,16 @@
 .knowledge-map__node { fill: var(--vp-c-brand-1); } .knowledge-map__node--python { fill: #16a34a; } .knowledge-map__node--langchain { fill: #ca8a04; } .knowledge-map__node--langgraph { fill: #2563eb; } .knowledge-map__node--ai-coding { fill: #9333ea; }
 .knowledge-map__label { fill: white; font-size: 15px; pointer-events: none; }
 .save-note, .note-card button { margin: .5rem 0; border: 1px solid var(--vp-c-divider); border-radius: 8px; padding: .35rem .65rem; background: var(--vp-c-bg-soft); cursor: pointer; }
+.article-tools, .learning-filters { display: flex; flex-wrap: wrap; gap: .55rem; align-items: center; margin: 1.25rem 0; }
+.article-tools input { max-width: 12rem; padding: .35rem .5rem; border: 1px solid var(--vp-c-divider); border-radius: 6px; }
+.article-tools button, .learning-filters button { border: 1px solid var(--vp-c-divider); border-radius: 8px; padding: .35rem .65rem; background: var(--vp-c-bg-soft); cursor: pointer; }
+.learning-filters button[aria-pressed="true"] { color: var(--vp-c-brand-1); border-color: var(--vp-c-brand-1); }
+.learning-series { margin: 1rem 0; padding: 1rem; border: 1px solid var(--vp-c-divider); border-radius: 10px; }
+.learning-series article { display: grid; grid-template-columns: minmax(9rem, 1fr) auto; gap: .35rem 1rem; align-items: center; margin: .6rem 0; }
+.learning-series progress { grid-column: 1 / -1; width: 100%; accent-color: var(--vp-c-brand-1); }
+.popular-notes, .publish-log { padding-left: 1.25rem; }.popular-notes li, .publish-log li { margin: .45rem 0; }.popular-notes small { margin-left: .5rem; color: var(--vp-c-text-2); }
+.note-copy-code { position: absolute; top: .45rem; right: .45rem; border: 1px solid var(--vp-c-divider); border-radius: 6px; padding: .2rem .45rem; color: var(--vp-c-text-1); background: var(--vp-c-bg); cursor: pointer; font-size: .75rem; }
+.vp-doc pre { position: relative; }.note-reading-mode .VPSidebar, .note-reading-mode .VPLocalNav, .note-reading-mode .VPDocAside { display: none; }.note-reading-mode .VPContent { padding-left: 0; }.note-reading-mode .VPDoc .container { max-width: 880px; }
 
 .vp-doc img {
   cursor: zoom-in;

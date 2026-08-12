@@ -4,6 +4,7 @@ import { onMounted, onUnmounted, ref } from 'vue'
 import ArticleEnhancements from './components/ArticleEnhancements.vue'
 import EngagementWidgets from './components/EngagementWidgets.vue'
 import ReadingProgress from './components/ReadingProgress.vue'
+import ArticleTools from './components/ArticleTools.vue'
 
 const readingProgress = ref(0)
 const expandedImage = ref('')
@@ -37,6 +38,7 @@ onUnmounted(() => {
   <div class="reading-progress" :style="{ transform: `scaleX(${readingProgress / 100})` }" aria-hidden="true" />
   <DefaultTheme.Layout>
     <template #doc-after>
+      <ArticleTools />
       <ArticleEnhancements />
       <ReadingProgress />
       <EngagementWidgets />

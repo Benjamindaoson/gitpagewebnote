@@ -1,0 +1,26 @@
+name: Weekly content health
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '20 0 * * 1'
+
+permissions:
+  contents: read
+
+jobs:
+  report:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npm run content:check
+      - run: npm run content:report > content-health.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: content-health-report
+          path: content-health.json

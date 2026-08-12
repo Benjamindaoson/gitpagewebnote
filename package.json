@@ -10,6 +10,7 @@
     "note:import": "node scripts/import-note.mjs",
     "note:import-folder": "node scripts/import-folder.mjs",
     "content:report": "node scripts/content-report.mjs",
+    "content:backup": "node scripts/backup-notes.mjs",
     "docs:dev": "npm run content:check && npm run content:generate && vitepress dev site",
     "docs:build": "npm run content:check && npm run content:generate && vitepress build site",
     "docs:preview": "vitepress preview site"

@@ -85,6 +85,10 @@ function asSources(value) {
   })).filter((entry) => entry.title || entry.url || entry.verified)
 }
 
+function asPrerequisites(value) {
+  return asArray(value)
+}
+
 function getWikiLinks(content) {
   return [...content.matchAll(wikiLinkPattern)].map((match) => ({
     title: match[1].trim(),
@@ -105,7 +109,7 @@ async function isFile(path) {
   }
 }
 
-async function loadAllNotes({ siteDir }) {
+export async function loadAllNotes({ siteDir }) {
   const markdownFiles = await walkMarkdownFiles(siteDir)
   const notes = []
 
@@ -128,6 +132,7 @@ async function loadAllNotes({ siteDir }) {
       changeLog: asChangeLog(parsed.data.changeLog),
       sources: asSources(parsed.data.sources),
       appliesTo: typeof parsed.data.appliesTo === 'string' ? parsed.data.appliesTo.trim() : '',
+      prerequisites: asPrerequisites(parsed.data.prerequisites),
       series: typeof parsed.data.series === 'string' ? parsed.data.series.trim() : '',
       seriesOrder: Number.isInteger(parsed.data.seriesOrder) ? parsed.data.seriesOrder : null,
       draft: parsed.data.draft === true,
@@ -152,6 +157,58 @@ export async function findMaintenanceWarnings({ siteDir, now = new Date().toISOS
   const notes = await loadNotes({ siteDir, now })
   return notes.filter((note) => nowMs - Date.parse(`${note.updated}T00:00:00Z`) > staleAfterDays * 86400000)
     .map((note) => ({ file: note.sourcePath, message: `内容超过 ${staleAfterDays} 天未复核：最后更新 ${note.updated}` }))
+}
+
+async function walkFiles(directory) {
+  const entries = await readdir(directory, { withFileTypes: true })
+  const files = []
+  for (const entry of entries) {
+    const entryPath = resolve(directory, entry.name)
+    if (entry.isDirectory()) files.push(...await walkFiles(entryPath))
+    else if (entry.isFile()) files.push(entryPath)
+  }
+  return files
+}
+
+/**
+ * Produces a non-blocking operations report.  Unlike validation, the report
+ * deliberately includes drafts and future releases so an editor sees work
+ * that still needs attention before it becomes public.
+ */
+export async function buildContentHealthReport({
+  siteDir,
+  now = new Date().toISOString().slice(0, 10),
+  staleAfterDays = 180,
+  largeImageBytes = 1024 * 1024
+} = {}) {
+  const allNotes = await loadAllNotes({ siteDir })
+  const published = allNotes.filter((note) => !note.draft && (!note.publishAt || note.publishAt <= now))
+  const network = buildKnowledgeNetwork(published)
+  const nowMs = Date.parse(`${now}T00:00:00Z`)
+  const validationIssues = await validateNotes({ siteDir })
+  const imageRoot = resolve(siteDir, 'public')
+  let oversizedImages = []
+  try {
+    oversizedImages = (await walkFiles(imageRoot))
+      .filter((filePath) => /\.(png|jpe?g|gif|webp|svg)$/i.test(filePath))
+      .map(async (filePath) => ({ file: relative(siteDir, filePath).replace(/\\/g, '/'), bytes: (await stat(filePath)).size }))
+    oversizedImages = (await Promise.all(oversizedImages)).filter((image) => image.bytes > largeImageBytes)
+  } catch {
+    oversizedImages = []
+  }
+
+  return {
+    generatedAt: now,
+    published: published.map(asReference),
+    drafts: allNotes.filter((note) => note.draft).map(asReference),
+    scheduled: allNotes.filter((note) => !note.draft && note.publishAt && note.publishAt > now).map((note) => ({ ...asReference(note), publishAt: note.publishAt })),
+    stale: published.filter((note) => note.updated && nowMs - Date.parse(`${note.updated}T00:00:00Z`) > staleAfterDays * 86400000).map(asReference),
+    withoutSources: published.filter((note) => note.sources.length === 0).map(asReference),
+    isolated: network.notes.filter((note) => note.wikiLinks.length === 0 && note.backlinks.length === 0).map(asReference),
+    oversizedImages,
+    brokenLocalLinks: validationIssues.filter((issue) => /Missing local (image|Markdown link)/.test(issue.message)),
+    validationIssues
+  }
 }
 
 function asReference(note) {

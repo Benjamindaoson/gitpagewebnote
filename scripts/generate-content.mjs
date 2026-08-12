@@ -2,6 +2,7 @@ import { mkdir, writeFile } from 'node:fs/promises'
 import { dirname, resolve } from 'node:path'
 import { pathToFileURL } from 'node:url'
 import { buildKnowledgeNetwork, groupNotes, loadNotes, validateNotes } from './content-index.mjs'
+import { loadPublishLog } from './publish-log.mjs'
 
 function asPublicNote(note) {
   return {
@@ -17,6 +18,7 @@ function asPublicNote(note) {
     changeLog: note.changeLog,
     sources: note.sources,
     appliesTo: note.appliesTo,
+    prerequisites: note.prerequisites,
     series: note.series,
     seriesOrder: note.seriesOrder,
     wikiLinks: note.wikiLinks,
@@ -79,7 +81,7 @@ function createFeed(notes, siteUrl) {
 }
 
 function createSitemap(notes, siteUrl) {
-  const staticPaths = ['/', '/updates/', '/categories/', '/tags/', '/archive/', '/learning-paths/']
+  const staticPaths = ['/', '/updates/', '/categories/', '/tags/', '/archive/', '/learning-paths/', '/knowledge-map/', '/my-learning/', '/publish-log/']
   const urls = [
     ...staticPaths.map((path) => ({ path, date: '' })),
     ...notes.map((note) => ({ path: note.url, date: note.updated }))
@@ -103,6 +105,7 @@ export async function generateContent({
   feedFile = resolve(siteDir, 'public/feed.xml'),
   sitemapFile = resolve(siteDir, 'public/sitemap.xml'),
   socialCardsDirectory = resolve(siteDir, 'public/social'),
+  publishLogFile = resolve(siteDir, '.vitepress/generated/publish-log.json'),
   siteUrl = 'https://benjamindaoson.github.io/gitpagewebnote'
 } = {}) {
   const issues = await validateNotes({ siteDir })
@@ -114,9 +117,12 @@ export async function generateContent({
   const network = buildKnowledgeNetwork(await loadNotes({ siteDir }))
   const notes = network.notes.map(asPublicNote)
   const index = { notes, ...groupNotes(notes), series: network.series }
+  const publishLog = await loadPublishLog()
 
   await mkdir(dirname(outputFile), { recursive: true })
   await writeFile(outputFile, `${JSON.stringify(index, null, 2)}\n`, 'utf8')
+  await mkdir(dirname(publishLogFile), { recursive: true })
+  await writeFile(publishLogFile, `${JSON.stringify(publishLog, null, 2)}\n`, 'utf8')
   await mkdir(dirname(feedFile), { recursive: true })
   await writeFile(feedFile, createFeed(notes, siteUrl), 'utf8')
   await mkdir(dirname(sitemapFile), { recursive: true })

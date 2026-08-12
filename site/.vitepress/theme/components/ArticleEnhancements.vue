@@ -41,6 +41,11 @@ const saved = computed({ get: () => typeof window !== 'undefined' && note.value 
       <ul v-if="note.sources.length"><li v-for="source in note.sources" :key="source.url"><a :href="source.url" target="_blank" rel="noreferrer">{{ source.title }}</a><span v-if="source.verified">（核验：{{ source.verified }}）</span></li></ul>
     </section>
 
+    <section v-if="note.prerequisites?.length" class="article-panel">
+      <h2>前置知识</h2>
+      <ul><li v-for="item in note.prerequisites" :key="item">{{ item }}</li></ul>
+    </section>
+
     <section v-if="note.wikiLinks.length || note.backlinks.length || note.relatedNotes.length" class="article-panel">
       <h2>知识关联</h2>
       <div v-if="note.wikiLinks.length">

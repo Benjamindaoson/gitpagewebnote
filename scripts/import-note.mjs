@@ -1,6 +1,6 @@
-import { execFile as execFileCallback } from 'node:child_process'
+import { execFile as execFileCallback, spawn } from 'node:child_process'
 import { readFile } from 'node:fs/promises'
-import { basename, extname, resolve, relative } from 'node:path'
+import { basename, extname, relative, resolve } from 'node:path'
 import { pathToFileURL } from 'node:url'
 import { promisify } from 'node:util'
 import { createInterface } from 'node:readline/promises'
@@ -9,11 +9,11 @@ import { CATEGORY_OPTIONS, validateNotes } from './content-index.mjs'
 import { createImportPlan, writeImport } from './note-importer.mjs'
 
 const execFile = promisify(execFileCallback)
-const TAG_OPTIONS = ['Python', 'LangChain', 'LangGraph', 'Agent', 'RAG', 'AI Coding', '工程实践']
+const TAG_OPTIONS = ['Python', 'LangChain', 'LangGraph', 'Agent', 'RAG', 'AI Coding', '\u5de5\u7a0b\u5b9e\u8df5']
 const DIFFICULTY_OPTIONS = [
-  { value: 'beginner', label: '入门' },
-  { value: 'intermediate', label: '进阶' },
-  { value: 'advanced', label: '高级' }
+  { value: 'beginner', label: '\u5165\u95e8' },
+  { value: 'intermediate', label: '\u8fdb\u9636' },
+  { value: 'advanced', label: '\u9ad8\u7ea7' }
 ]
 
 function today() {
@@ -32,58 +32,55 @@ function detectText(sourcePath, source) {
 
   return {
     title: parsed.data.title || heading || basename(sourcePath, extname(sourcePath)),
-    description: parsed.data.description || paragraph || '从本地 Markdown 导入的笔记。'
+    description: parsed.data.description || paragraph || '\u4ece\u672c\u5730 Markdown \u5bfc\u5165\u7684\u7b14\u8bb0\u3002'
   }
 }
 
 async function chooseOne(reader, question, options) {
   const renderedOptions = options.map((option, index) => `  ${index + 1}. ${option.label}`).join('\n')
   while (true) {
-    const answer = (await reader.question(`${question}\n${renderedOptions}\n请选择编号：`)).trim()
+    const answer = (await reader.question(`${question}\n${renderedOptions}\n\u8bf7\u9009\u62e9\u7f16\u53f7\uff1a`)).trim()
     const selected = Number(answer)
     if (Number.isInteger(selected) && selected >= 1 && selected <= options.length) return options[selected - 1]
-    console.log('请输入有效的编号。')
+    console.log('\u8bf7\u8f93\u5165\u6709\u6548\u7684\u7f16\u53f7\u3002')
   }
 }
 
 async function chooseText(reader, label, detectedValue) {
-  const selection = await chooseOne(reader, `${label}：检测到“${detectedValue}”`, [
-    { value: 'detected', label: '使用检测结果（推荐）' },
-    { value: 'custom', label: '自定义输入' }
+  const selection = await chooseOne(reader, `${label}\uff1a\u68c0\u6d4b\u5230\u201c${detectedValue}\u201d`, [
+    { value: 'detected', label: '\u4f7f\u7528\u68c0\u6d4b\u7ed3\u679c\uff08\u63a8\u8350\uff09' },
+    { value: 'custom', label: '\u81ea\u5b9a\u4e49\u8f93\u5165' }
   ])
   if (selection.value === 'detected') return detectedValue
 
   while (true) {
-    const customValue = (await reader.question(`请输入${label}：`)).trim()
+    const customValue = (await reader.question(`\u8bf7\u8f93\u5165${label}\uff1a`)).trim()
     if (customValue) return customValue
-    console.log(`${label}不能为空。`)
+    console.log(`${label}\u4e0d\u80fd\u4e3a\u7a7a\u3002`)
   }
 }
 
 async function chooseTags(reader) {
   const options = TAG_OPTIONS.map((tag) => ({ value: tag, label: tag }))
-  console.log(`选择标签，可用逗号选择多个编号：\n${options.map((option, index) => `  ${index + 1}. ${option.label}`).join('\n')}`)
+  console.log(`\u9009\u62e9\u6807\u7b7e\uff0c\u53ef\u7528\u9017\u53f7\u9009\u62e9\u591a\u4e2a\u7f16\u53f7\uff1a\n${options.map((option, index) => `  ${index + 1}. ${option.label}`).join('\n')}`)
   while (true) {
-    const answer = (await reader.question('请输入标签编号，例如 3,4：')).trim()
+    const answer = (await reader.question('\u8bf7\u8f93\u5165\u6807\u7b7e\u7f16\u53f7\uff0c\u4f8b\u5982 3,4\uff1a')).trim()
     const selections = [...new Set(answer.split(',').map((value) => Number(value.trim())).filter(Number.isInteger))]
-    if (selections.length > 0 && selections.every((index) => index >= 1 && index <= options.length)) {
-      return selections.map((index) => options[index - 1].value)
-    }
-    console.log('请输入一个或多个有效的标签编号。')
+    if (selections.length > 0 && selections.every((index) => index >= 1 && index <= options.length)) return selections.map((index) => options[index - 1].value)
+    console.log('\u8bf7\u8f93\u5165\u4e00\u4e2a\u6216\u591a\u4e2a\u6709\u6548\u7684\u6807\u7b7e\u7f16\u53f7\u3002')
   }
 }
 
 async function chooseDate(reader) {
-  const selection = await chooseOne(reader, '发布日期', [
-    { value: today(), label: `使用今天（${today()}，推荐）` },
-    { value: 'custom', label: '自定义日期' }
+  const selection = await chooseOne(reader, '\u53d1\u5e03\u65e5\u671f', [
+    { value: today(), label: `\u4f7f\u7528\u4eca\u5929\uff08${today()}\uff0c\u63a8\u8350\uff09` },
+    { value: 'custom', label: '\u81ea\u5b9a\u4e49\u65e5\u671f' }
   ])
   if (selection.value !== 'custom') return selection.value
-
   while (true) {
-    const value = (await reader.question('请输入日期（YYYY-MM-DD）：')).trim()
+    const value = (await reader.question('\u8bf7\u8f93\u5165\u65e5\u671f\uff08YYYY-MM-DD\uff09\uff1a')).trim()
     if (/^\d{4}-\d{2}-\d{2}$/.test(value)) return value
-    console.log('日期格式应为 YYYY-MM-DD。')
+    console.log('\u65e5\u671f\u683c\u5f0f\u5e94\u4e3a YYYY-MM-DD\u3002')
   }
 }
 
@@ -91,14 +88,46 @@ async function runGit(args) {
   await execFile('git', args, { cwd: process.cwd() })
 }
 
-async function publishImport(result, metadata, action) {
-  const gitPaths = [relative(process.cwd(), result.notePath), ...result.assetPaths.map((path) => relative(process.cwd(), path))]
-  await runGit(['add', '--', ...gitPaths])
-  await runGit(['commit', '-m', `docs: import ${metadata.title}`])
-  if (action === 'push') await runGit(['push'])
+export function summarizeImportPlan(plan) {
+  return {
+    targetNotePath: plan.targetNotePath,
+    category: plan.metadata.category,
+    tags: plan.metadata.tags,
+    imageCount: plan.assetCopies.length,
+    createdFiles: [plan.targetNotePath, ...plan.assetCopies.map((asset) => asset.targetPath)]
+  }
 }
 
-export async function runInteractiveImport(sourcePath, { reader: suppliedReader, siteDir = resolve('site') } = {}) {
+export function formatImportSummary(summary) {
+  return [
+    '\u5bfc\u5165\u9884\u89c8\uff1a',
+    `\u76ee\u6807\u6587\u4ef6\uff1a${summary.targetNotePath}`,
+    `\u680f\u76ee\uff1a${summary.category}`,
+    `\u6807\u7b7e\uff1a${summary.tags.join('\u3001') || '\u65e0'}`,
+    `\u56fe\u7247\uff1a${summary.imageCount} \u4e2a`,
+    '\u5c06\u65b0\u589e\u6216\u4fee\u6539\uff1a',
+    ...summary.createdFiles.map((filePath) => `  - ${filePath}`)
+  ].join('\n')
+}
+
+function startLocalPreview() {
+  const npmCommand = process.platform === 'win32' ? 'npm.cmd' : 'npm'
+  return spawn(npmCommand, ['run', 'docs:dev'], { cwd: process.cwd(), stdio: 'inherit' })
+}
+
+async function publishImport(result, metadata, { push, gitRunner }) {
+  const gitPaths = [relative(process.cwd(), result.notePath), ...result.assetPaths.map((path) => relative(process.cwd(), path))]
+  await gitRunner(['add', '--', ...gitPaths])
+  await gitRunner(['commit', '-m', `docs: import ${metadata.title}`])
+  if (push) await gitRunner(['push'])
+}
+
+export async function runInteractiveImport(sourcePath, {
+  reader: suppliedReader,
+  siteDir = resolve('site'),
+  previewRunner = startLocalPreview,
+  gitRunner = runGit
+} = {}) {
   const resolvedSourcePath = resolve(sourcePath)
   const source = await readFile(resolvedSourcePath, 'utf8')
   const detected = detectText(resolvedSourcePath, source)
@@ -106,51 +135,55 @@ export async function runInteractiveImport(sourcePath, { reader: suppliedReader,
   const ownsReader = !suppliedReader
 
   try {
-    console.log('\n开始导入笔记。除自定义标题或摘要外，所有设置均为编号选择。\n')
-    const title = await chooseText(reader, '标题', detected.title)
-    const description = await chooseText(reader, '摘要', detected.description)
-    const category = await chooseOne(reader, '所属栏目', CATEGORY_OPTIONS)
+    console.log('\n\u5f00\u59cb\u5bfc\u5165\u7b14\u8bb0\u3002\u9664\u81ea\u5b9a\u4e49\u6807\u9898\u6216\u6458\u8981\u5916\uff0c\u6240\u6709\u8bbe\u7f6e\u5747\u4e3a\u7f16\u53f7\u9009\u62e9\u3002\n')
+    const title = await chooseText(reader, '\u6807\u9898', detected.title)
+    const description = await chooseText(reader, '\u6458\u8981', detected.description)
+    const category = await chooseOne(reader, '\u6240\u5c5e\u680f\u76ee', CATEGORY_OPTIONS)
     const tags = await chooseTags(reader)
-    const difficulty = await chooseOne(reader, '难度', DIFFICULTY_OPTIONS)
+    const difficulty = await chooseOne(reader, '\u96be\u5ea6', DIFFICULTY_OPTIONS)
     const date = await chooseDate(reader)
-    const visibility = await chooseOne(reader, '笔记状态', [
-      { value: false, label: '公开发布（推荐）' },
-      { value: true, label: '保存为草稿，不出现在公开导航中' }
+    const visibility = await chooseOne(reader, '\u7b14\u8bb0\u72b6\u6001', [
+      { value: false, label: '\u516c\u5f00\u53d1\u5e03\uff08\u63a8\u8350\uff09' },
+      { value: true, label: '\u4fdd\u5b58\u4e3a\u8349\u7a3f\uff0c\u4e0d\u51fa\u73b0\u5728\u516c\u5f00\u5bfc\u822a\u4e2d' }
     ])
-    const action = await chooseOne(reader, '导入完成后执行什么操作', [
-      { value: 'import', label: '仅导入到本地工作区（推荐）' },
-      { value: 'commit', label: '导入并创建 Git 提交' },
-      { value: 'push', label: '导入、提交并推送到 GitHub Pages' }
-    ])
-
-    const metadata = {
-      title,
-      description,
-      category: category.value,
-      tags,
-      difficulty: difficulty.value,
-      date,
-      draft: visibility.value
-    }
-    const plan = await createImportPlan({
-      sourcePath: resolvedSourcePath,
-      siteDir,
-      metadata,
-      base: '/gitpagewebnote/'
-    })
+    const metadata = { title, description, category: category.value, tags, difficulty: difficulty.value, date, draft: visibility.value }
+    const plan = await createImportPlan({ sourcePath: resolvedSourcePath, siteDir, metadata, base: '/gitpagewebnote/' })
     const result = await writeImport(plan)
     const issues = await validateNotes({ siteDir })
-    if (issues.length > 0) {
-      throw new Error(`笔记已导入，但内容校验失败：\n${issues.map((issue) => `${issue.file}: ${issue.message}`).join('\n')}`)
+    if (issues.length > 0) throw new Error(`\u7b14\u8bb0\u5df2\u5bfc\u5165\uff0c\u4f46\u5185\u5bb9\u6821\u9a8c\u5931\u8d25\uff1a\n${issues.map((issue) => `${issue.file}: ${issue.message}`).join('\n')}`)
+
+    console.log(`\n\u5bfc\u5165\u6210\u529f\uff1a${result.notePath}`)
+    console.log(formatImportSummary(summarizeImportPlan(plan)))
+    const preview = await chooseOne(reader, '\u4e0b\u4e00\u6b65\uff1a\u662f\u5426\u542f\u52a8\u672c\u5730\u9884\u89c8\uff1f', [
+      { value: 'preview', label: '\u542f\u52a8\u672c\u5730\u9884\u89c8\u540e\u518d\u51b3\u5b9a\u53d1\u5e03\uff08\u63a8\u8350\uff09' },
+      { value: 'skip', label: '\u8df3\u8fc7\u9884\u89c8\uff0c\u7ee7\u7eed\u9009\u62e9\u662f\u5426\u63d0\u4ea4' }
+    ])
+    if (preview.value === 'preview') {
+      const previewProcess = previewRunner()
+      const previewAction = await chooseOne(reader, '\u672c\u5730\u9884\u89c8\u5df2\u542f\u52a8\u3002\u4e0b\u4e00\u6b65\uff1a', [
+        { value: 'stop-and-continue', label: '\u505c\u6b62\u9884\u89c8\uff0c\u7ee7\u7eed\u9009\u62e9\u662f\u5426\u63d0\u4ea4' },
+        { value: 'keep-local', label: '\u4fdd\u7559\u672c\u5730\u6587\u4ef6\uff0c\u7a0d\u540e\u624b\u52a8\u53d1\u5e03' }
+      ])
+      if (previewAction.value === 'keep-local') {
+        console.log('\u5df2\u4fdd\u7559\u9884\u89c8\u670d\u52a1\u548c\u672c\u5730\u6587\u4ef6\uff1b\u672a\u6267\u884c Git \u64cd\u4f5c\u3002')
+        return result
+      }
+      previewProcess.kill?.()
     }
-
-    if (action.value !== 'import') await publishImport(result, metadata, action.value)
-
-    console.log(`\n导入成功：${result.notePath}`)
-    console.log(`已复制图片：${result.assetPaths.length} 个`)
-    if (action.value === 'push') console.log('已推送到 GitHub，GitHub Pages 将自动发布。')
-    if (action.value === 'commit') console.log('已创建 Git 提交；运行 git push 即可发布。')
-    if (action.value === 'import') console.log('文件仅写入本地；检查后可自行提交，或再次选择发布选项。')
+    const commit = await chooseOne(reader, '\u68c0\u67e5\u5b8c\u6210\u540e\uff0c\u662f\u5426\u521b\u5efa Git \u63d0\u4ea4\uff1f', [
+      { value: 'commit', label: '\u521b\u5efa Git \u63d0\u4ea4' },
+      { value: 'local', label: '\u4ec5\u4fdd\u7559\u672c\u5730\u6587\u4ef6\uff08\u63a8\u8350\uff09' }
+    ])
+    if (commit.value === 'local') {
+      console.log('\u6587\u4ef6\u5df2\u4fdd\u7559\u5728\u672c\u5730\u5de5\u4f5c\u533a\uff1b\u672a\u6267\u884c Git \u64cd\u4f5c\u3002')
+      return result
+    }
+    const push = await chooseOne(reader, '\u63d0\u4ea4\u5b8c\u6210\u540e\uff0c\u662f\u5426\u7acb\u5373\u63a8\u9001\u5e76\u89e6\u53d1 GitHub Pages\uff1f', [
+      { value: true, label: '\u63d0\u4ea4\u5e76\u63a8\u9001\u5230 GitHub Pages' },
+      { value: false, label: '\u4ec5\u521b\u5efa\u672c\u5730 Git \u63d0\u4ea4' }
+    ])
+    await publishImport(result, metadata, { push: push.value, gitRunner })
+    console.log(push.value ? '\u5df2\u63d0\u4ea4\u5e76\u63a8\u9001\u5230 GitHub\uff0cGitHub Pages \u5c06\u81ea\u52a8\u53d1\u5e03\u3002' : '\u5df2\u521b\u5efa Git \u63d0\u4ea4\uff1b\u7a0d\u540e\u8fd0\u884c git push \u5373\u53ef\u53d1\u5e03\u3002')
     return result
   } finally {
     if (ownsReader) reader.close()
@@ -160,11 +193,11 @@ export async function runInteractiveImport(sourcePath, { reader: suppliedReader,
 if (process.argv[1] && import.meta.url === pathToFileURL(resolve(process.argv[1])).href) {
   const sourcePath = process.argv[2]
   if (!sourcePath) {
-    console.error('用法：npm run note:import -- <Markdown 文件路径>')
+    console.error('\u7528\u6cd5\uff1anpm run note:import -- <Markdown \u6587\u4ef6\u8def\u5f84>')
     process.exitCode = 1
   } else {
     runInteractiveImport(sourcePath).catch((error) => {
-      console.error(`\n导入失败：${error.message}`)
+      console.error(`\n\u5bfc\u5165\u5931\u8d25\uff1a${error.message}`)
       process.exitCode = 1
     })
   }

@@ -72,7 +72,7 @@ test('rejects a conflicting target note without overwriting it', async () => {
 test('imports through the choice-driven CLI without asking for custom text', async () => {
   const cliSource = join(sourceDir, 'cli note.md')
   await writeFile(cliSource, '# CLI note\n\nA concise imported note.\n\n![Diagram](assets/diagram.png)\n', 'utf8')
-  const answers = ['1', '1', '3', '3,4', '1', '1', '1', '1']
+  const answers = ['1', '1', '3', '3,4', '1', '1', '1', '2', '2']
   const reader = {
     question: async () => answers.shift(),
     close: () => undefined
@@ -84,4 +84,43 @@ test('imports through the choice-driven CLI without asking for custom text', asy
   await assert.doesNotReject(access(importedPath))
   assert.match(await readFile(importedPath, 'utf8'), /title: CLI note/)
   assert.equal(await readFile(join(siteDir, 'public', 'notes', 'cli-note', 'diagram.png'), 'utf8'), 'image-bytes')
+})
+
+test('summarizes an import plan and keeps it local when preview and publishing are declined', async () => {
+  const previewSource = join(sourceDir, 'preview note.md')
+  await writeFile(previewSource, '# Preview note\n\n![Diagram](assets/diagram.png)\n', 'utf8')
+  const answers = ['1', '1', '3', '3', '1', '1', '1', '2', '2']
+  const gitCalls = []
+  const reader = { question: async () => answers.shift(), close: () => undefined }
+  const { createImportPlan } = await import('../scripts/note-importer.mjs')
+  const { formatImportSummary, runInteractiveImport, summarizeImportPlan } = await import('../scripts/import-note.mjs')
+  const plan = await createImportPlan({ sourcePath: previewSource, siteDir, metadata: { ...metadata, title: 'Preview note' }, base: '/gitpagewebnote/' })
+
+  assert.deepEqual(summarizeImportPlan(plan), {
+    targetNotePath: join(siteDir, 'langgraph', 'preview-note.md'),
+    category: 'langgraph',
+    tags: ['LangGraph', 'Agent'],
+    imageCount: 1,
+    createdFiles: [join(siteDir, 'langgraph', 'preview-note.md'), join(siteDir, 'public', 'notes', 'preview-note', 'diagram.png')]
+  })
+  assert.match(formatImportSummary(summarizeImportPlan(plan)), /图片：1 个/)
+
+  await runInteractiveImport(previewSource, { reader, siteDir, gitRunner: async (args) => gitCalls.push(args) })
+  assert.deepEqual(gitCalls, [])
+})
+
+test('commits only after the separate commit choice and does not push when declined', async () => {
+  const commitSource = join(sourceDir, 'commit note.md')
+  await writeFile(commitSource, '# Commit note\n\n![Diagram](assets/diagram.png)\n', 'utf8')
+  const answers = ['1', '1', '3', '3', '1', '1', '1', '2', '1', '2']
+  const gitCalls = []
+  const reader = { question: async () => answers.shift(), close: () => undefined }
+  const { runInteractiveImport } = await import('../scripts/import-note.mjs')
+
+  await runInteractiveImport(commitSource, { reader, siteDir, gitRunner: async (args) => gitCalls.push(args) })
+
+  assert.deepEqual(gitCalls[0].slice(0, 2), ['add', '--'])
+  assert.match(gitCalls[0][2], /commit-note\.md$/)
+  assert.match(gitCalls[0][3], /commit-note[\\/]diagram\.png$/)
+  assert.deepEqual(gitCalls[1], ['commit', '-m', 'docs: import Commit note'])
 })

@@ -5,6 +5,12 @@ import { createSeoHead } from '../../scripts/site-seo.mjs'
 
 const siteDir = fileURLToPath(new URL('..', import.meta.url))
 const base = '/gitpagewebnote/'
+const mainSiteUrl = 'https://benjamindaoson.github.io/daoson_website/'
+const mainSiteLinks = [
+  { text: '关于作者', link: `${mainSiteUrl}about/` },
+  { text: '返回主站', link: mainSiteUrl },
+  { text: '项目案例', link: `${mainSiteUrl}projects/` }
+]
 
 function wikiLinkPlugin(markdown: any, urls: Map<string, string>) {
   markdown.inline.ruler.before('emphasis', 'note-wiki-link', (state: any, silent: boolean) => {
@@ -62,6 +68,7 @@ export default async () => {
       siteTitle: 'Benjamin 的 AI 笔记',
       nav: [
         { text: '首页', link: '/' },
+        { text: '个人主页', items: mainSiteLinks },
         { text: 'Python', link: '/python/' },
         { text: 'LangChain', link: '/langchain/' },
         { text: 'LangGraph', link: '/langgraph/' },

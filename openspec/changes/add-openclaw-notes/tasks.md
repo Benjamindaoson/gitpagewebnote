@@ -12,4 +12,4 @@
 ## 3. Verification and release
 
 - [x] 3.1 Run the full Node test suite and production VitePress build.
-- [ ] 3.2 Inspect the diff, commit the scoped changes and push to `main` for GitHub Pages deployment.
+- [x] 3.2 Inspect the diff, commit the scoped changes and push to `main` for GitHub Pages deployment.

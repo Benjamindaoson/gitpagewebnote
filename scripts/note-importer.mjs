@@ -9,6 +9,7 @@ const imagePattern = /!\[([^\]]*)\]\(([^)\s]+)(\s+[^)]*)?\)/g
 export function recommendNoteMetadata(markdown) {
   const content = String(markdown).toLowerCase()
   const rules = [
+    { category: 'openclaw', tag: 'OpenClaw', pattern: /openclaw/ },
     { category: 'langgraph', tag: 'LangGraph', pattern: /langgraph|stategraph/ },
     { category: 'langchain', tag: 'LangChain', pattern: /langchain|retriever|prompt template/ },
     { category: 'python', tag: 'Python', pattern: /python|pip|pytest|pandas/ },

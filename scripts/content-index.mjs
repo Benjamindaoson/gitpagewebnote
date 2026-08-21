@@ -6,6 +6,7 @@ export const CATEGORY_OPTIONS = [
   { value: 'python', label: 'Python' },
   { value: 'langchain', label: 'LangChain' },
   { value: 'langgraph', label: 'LangGraph' },
+  { value: 'openclaw', label: 'OpenClaw' },
   { value: 'ai-coding', label: 'AI Coding' }
 ]
 

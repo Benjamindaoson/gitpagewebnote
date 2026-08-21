@@ -72,6 +72,7 @@ export default async () => {
         { text: 'Python', link: '/python/' },
         { text: 'LangChain', link: '/langchain/' },
         { text: 'LangGraph', link: '/langgraph/' },
+        { text: 'OpenClaw', link: '/openclaw/' },
         { text: 'AI Coding', link: '/ai-coding/' },
         {
           text: '学习索引',

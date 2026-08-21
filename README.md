@@ -19,7 +19,7 @@ npm run note:import -- "D:\我的笔记\LangGraph 状态管理.md"
 
 1. 是否采用自动检测到的标题；只有选“自定义”才需输入标题。
 2. 是否采用自动提取的摘要；只有选“自定义”才需输入摘要。
-3. 栏目：Python、LangChain、LangGraph 或 AI Coding。
+3. 栏目：Python、LangChain、LangGraph、OpenClaw 或 AI Coding。
 4. 标签：可一次选择多个编号，例如 `3,4`。
 5. 难度、发布日期和公开/草稿状态。
 6. 导入后会显示变更预览，并依次选择本地预览、提交和推送。
@@ -60,7 +60,7 @@ draft: false
 ---
 ```
 
-允许的 `category` 是：`python`、`langchain`、`langgraph`、`ai-coding`。`draft: true` 的文章会留在仓库中，但不出现在公开导航、搜索发现页、RSS 或 sitemap。
+允许的 `category` 是：`python`、`langchain`、`langgraph`、`openclaw`、`ai-coding`。`draft: true` 的文章会留在仓库中，但不出现在公开导航、搜索发现页、RSS 或 sitemap。
 
 ## 本地开发与检查
 

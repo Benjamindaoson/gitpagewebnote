@@ -57,3 +57,11 @@ test('finds stale notes and makes local import recommendations without sending n
   assert.ok(suggestion.tags.includes('LangGraph'))
   assert.equal(suggestion.difficulty, 'intermediate')
 })
+
+test('recommends the OpenClaw category for OpenClaw source-reading notes', async () => {
+  const { recommendNoteMetadata } = await import('../scripts/note-importer.mjs')
+  const suggestion = recommendNoteMetadata('# OpenClaw Runtime\n\n追踪 OpenClaw Gateway 与 Agent Runtime 的调用链。')
+
+  assert.equal(suggestion.category, 'openclaw')
+  assert.ok(suggestion.tags.includes('OpenClaw'))
+})

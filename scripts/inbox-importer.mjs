@@ -3,7 +3,7 @@ import { basename, extname, resolve } from 'node:path'
 import matter from 'gray-matter'
 import { createImportPlan, recommendNoteMetadata, writeImport } from './note-importer.mjs'
 
-const fallbackTags = { python: ['Python'], langchain: ['LangChain'], langgraph: ['LangGraph'], 'ai-coding': ['AI Coding'] }
+const fallbackTags = { python: ['Python'], langchain: ['LangChain'], langgraph: ['LangGraph'], openclaw: ['OpenClaw'], 'ai-coding': ['AI Coding'] }
 
 async function discoverMarkdown(directory) {
   const entries = await readdir(directory, { withFileTypes: true })

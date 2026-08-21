@@ -9,7 +9,7 @@ import { CATEGORY_OPTIONS, validateNotes } from './content-index.mjs'
 import { createImportPlan, recommendNoteMetadata, writeImport } from './note-importer.mjs'
 
 const execFile = promisify(execFileCallback)
-const TAG_OPTIONS = ['Python', 'LangChain', 'LangGraph', 'Agent', 'RAG', 'AI Coding', '\u5de5\u7a0b\u5b9e\u8df5']
+const TAG_OPTIONS = ['Python', 'LangChain', 'LangGraph', 'Agent', 'RAG', 'AI Coding', '\u5de5\u7a0b\u5b9e\u8df5', 'OpenClaw']
 const DIFFICULTY_OPTIONS = [
   { value: 'beginner', label: '\u5165\u95e8' },
   { value: 'intermediate', label: '\u8fdb\u9636' },

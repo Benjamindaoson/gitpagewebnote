@@ -8,11 +8,11 @@ The site SHALL accept `openclaw` as a valid public note category and label it `O
 - **THEN** content validation SHALL accept the category and generated category data SHALL include the note under `OpenClaw`
 
 ### Requirement: OpenClaw category is reachable from site navigation
-The site SHALL expose an `OpenClaw` top-level navigation link to `/openclaw/` and generate an OpenClaw sidebar from published notes.
+The site SHALL expose an `OpenClaw` top-level navigation link to `/openclaw/`, provide a VitePress category root page at that path, and generate an OpenClaw sidebar from published notes.
 
 #### Scenario: Reader opens site navigation
 - **WHEN** the VitePress configuration is loaded
-- **THEN** its navigation SHALL contain an `OpenClaw` item and its sidebar SHALL contain an `/openclaw/` section
+- **THEN** its navigation SHALL contain an `OpenClaw` item, its sidebar SHALL contain an `/openclaw/` section, and the linked category route SHALL render a page
 
 ### Requirement: OpenClaw notes are recognized by import workflows
 The interactive and inbox import workflows SHALL recognize OpenClaw content and assign the `openclaw` category with an `OpenClaw` fallback tag.

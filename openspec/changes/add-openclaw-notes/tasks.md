@@ -13,3 +13,9 @@
 
 - [x] 3.1 Run the full Node test suite and production VitePress build.
 - [x] 3.2 Inspect the diff, commit the scoped changes and push to `main` for GitHub Pages deployment.
+
+## 4. Category route regression repair
+
+- [x] 4.1 Add a regression test requiring every top-level category link to have an `index.md` route.
+- [x] 4.2 Add category root pages for OpenClaw and the previously missing LangGraph route.
+- [ ] 4.3 Rebuild, smoke-test category root URLs, and publish the repair.

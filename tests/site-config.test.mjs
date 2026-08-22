@@ -1,4 +1,6 @@
 import assert from 'node:assert/strict'
+import { access } from 'node:fs/promises'
+import { resolve } from 'node:path'
 import test from 'node:test'
 
 test('site configuration defines the project Pages path and documentation UI', async () => {
@@ -20,4 +22,10 @@ test('site configuration defines the project Pages path and documentation UI', a
     { text: '返回主站', link: 'https://benjamindaoson.github.io/daoson_website/' },
     { text: '项目案例', link: 'https://benjamindaoson.github.io/daoson_website/projects/' }
   ])
+})
+
+test('every top-level note category link has a generated category route', async () => {
+  for (const category of ['python', 'langchain', 'langgraph', 'openclaw', 'ai-coding']) {
+    await access(resolve('site', category, 'index.md'))
+  }
 })

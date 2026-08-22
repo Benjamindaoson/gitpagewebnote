@@ -18,4 +18,4 @@
 
 - [x] 4.1 Add a regression test requiring every top-level category link to have an `index.md` route.
 - [x] 4.2 Add category root pages for OpenClaw and the previously missing LangGraph route.
-- [ ] 4.3 Rebuild, smoke-test category root URLs, and publish the repair.
+- [x] 4.3 Rebuild, smoke-test category root URLs, and publish the repair.

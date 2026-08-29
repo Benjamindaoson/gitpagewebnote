@@ -10,8 +10,12 @@ import DocArticleHeader from './components/DocArticleHeader.vue'
 import DocAsideCards from './components/DocAsideCards.vue'
 import DocSidebarHeader from './components/DocSidebarHeader.vue'
 
-const { frontmatter } = useData()
-const isArticlePage = computed(() => Boolean(frontmatter.value.category))
+const { page } = useData()
+const learningSections = ['python', 'langchain', 'langgraph', 'openclaw', 'ai-coding']
+const isArticlePage = computed(() => {
+  const relativePath = page.value.relativePath || ''
+  return learningSections.some((section) => relativePath === `${section}/index.md` || relativePath.startsWith(`${section}/`))
+})
 
 const readingProgress = ref(0)
 const expandedImage = ref('')

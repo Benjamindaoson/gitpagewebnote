@@ -7,9 +7,11 @@ import MyLearning from './components/MyLearning.vue'
 import PopularNotes from './components/PopularNotes.vue'
 import PublishLog from './components/PublishLog.vue'
 import RecentNotes from './components/RecentNotes.vue'
+import HomeLearningHub from './components/HomeLearningHub.vue'
 import Layout from './Layout.vue'
 import './custom.css'
 import './course-doc.css'
+import './home-learning.css'
 
 export default {
   extends: DefaultTheme,
@@ -23,5 +25,6 @@ export default {
     app.component('PopularNotes', PopularNotes)
     app.component('PublishLog', PublishLog)
     app.component('RecentNotes', RecentNotes)
+    app.component('HomeLearningHub', HomeLearningHub)
   }
 }

@@ -49,6 +49,10 @@ export default async () => {
     cleanUrls: true,
     lastUpdated: true,
     markdown: {
+      theme: {
+        light: 'github-dark',
+        dark: 'github-dark'
+      },
       config: (markdown) => wikiLinkPlugin(markdown, new Map(network.notes.map((note) => [note.title, note.url])))
     },
     transformHead: (context) => {
@@ -82,8 +86,8 @@ export default async () => {
             { text: '标签浏览', link: '/tags/' },
             { text: '年度归档', link: '/archive/' },
             { text: '学习路径', link: '/learning-paths/' },
-            { text: '知识地图', link: '/knowledge-map/' }
-            , { text: '我的学习', link: '/my-learning/' }
+            { text: '知识地图', link: '/knowledge-map/' },
+            { text: '我的学习', link: '/my-learning/' }
           ]
         }
       ],

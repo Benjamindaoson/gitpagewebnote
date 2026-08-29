@@ -2,8 +2,13 @@
 import { computed } from 'vue'
 import { useData, withBase } from 'vitepress'
 
-const { frontmatter } = useData()
-const activeCategory = computed(() => String(frontmatter.value.category || ''))
+const { page, frontmatter } = useData()
+const activeCategory = computed(() => {
+  const explicit = String(frontmatter.value.category || '')
+  if (explicit) return explicit
+  const relativePath = page.value.relativePath || ''
+  return relativePath.split('/')[0] || ''
+})
 
 const sections = [
   { label: '首页', href: '/', key: 'home', mark: 'H' },

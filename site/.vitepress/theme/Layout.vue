@@ -1,10 +1,17 @@
 <script setup lang="ts">
 import DefaultTheme from 'vitepress/theme'
-import { onMounted, onUnmounted, ref } from 'vue'
+import { computed, onMounted, onUnmounted, ref } from 'vue'
+import { useData } from 'vitepress'
 import ArticleEnhancements from './components/ArticleEnhancements.vue'
 import EngagementWidgets from './components/EngagementWidgets.vue'
 import ReadingProgress from './components/ReadingProgress.vue'
 import ArticleTools from './components/ArticleTools.vue'
+import DocArticleHeader from './components/DocArticleHeader.vue'
+import DocAsideCards from './components/DocAsideCards.vue'
+import DocSidebarHeader from './components/DocSidebarHeader.vue'
+
+const { frontmatter } = useData()
+const isArticlePage = computed(() => Boolean(frontmatter.value.category))
 
 const readingProgress = ref(0)
 const expandedImage = ref('')
@@ -35,22 +42,38 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <div class="reading-progress" :style="{ transform: `scaleX(${readingProgress / 100})` }" aria-hidden="true" />
-  <DefaultTheme.Layout>
-    <template #doc-after>
-      <ArticleTools />
-      <ArticleEnhancements />
-      <ReadingProgress />
-      <EngagementWidgets />
-    </template>
-  </DefaultTheme.Layout>
-  <button
-    v-if="expandedImage"
-    class="image-lightbox"
-    type="button"
-    :aria-label="`关闭图片预览：${expandedImageAlt || '图片'}`"
-    @click="expandedImage = ''"
-  >
-    <img :src="expandedImage" :alt="expandedImageAlt" />
-  </button>
+  <div :class="{ 'course-doc-shell': isArticlePage }">
+    <div class="reading-progress" :style="{ transform: `scaleX(${readingProgress / 100})` }" aria-hidden="true" />
+
+    <DefaultTheme.Layout>
+      <template #sidebar-nav-before>
+        <DocSidebarHeader v-if="isArticlePage" />
+      </template>
+
+      <template #doc-before>
+        <DocArticleHeader v-if="isArticlePage" />
+      </template>
+
+      <template #aside-bottom>
+        <DocAsideCards v-if="isArticlePage" />
+      </template>
+
+      <template #doc-after>
+        <ArticleTools />
+        <ArticleEnhancements />
+        <ReadingProgress />
+        <EngagementWidgets />
+      </template>
+    </DefaultTheme.Layout>
+
+    <button
+      v-if="expandedImage"
+      class="image-lightbox"
+      type="button"
+      :aria-label="`关闭图片预览：${expandedImageAlt || '图片'}`"
+      @click="expandedImage = ''"
+    >
+      <img :src="expandedImage" :alt="expandedImageAlt" />
+    </button>
+  </div>
 </template>

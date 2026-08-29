@@ -9,6 +9,7 @@ import PublishLog from './components/PublishLog.vue'
 import RecentNotes from './components/RecentNotes.vue'
 import Layout from './Layout.vue'
 import './custom.css'
+import './course-doc.css'
 
 export default {
   extends: DefaultTheme,

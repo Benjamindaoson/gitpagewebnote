@@ -4,7 +4,13 @@ import { useData, withBase } from 'vitepress'
 
 const { page, frontmatter } = useData()
 
-const category = computed(() => String(frontmatter.value.category || ''))
+const category = computed(() => {
+  const explicit = String(frontmatter.value.category || '')
+  if (explicit) return explicit
+  const relativePath = page.value.relativePath || ''
+  return relativePath.split('/')[0] || ''
+})
+
 const categoryLabel = computed(() => {
   const labels: Record<string, string> = {
     python: 'Python',

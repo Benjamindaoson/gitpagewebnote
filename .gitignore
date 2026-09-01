@@ -1,4 +1,5 @@
 node_modules/
+.codegraph/
 site/.vitepress/cache/
 site/.vitepress/dist/
 site/.vitepress/generated/

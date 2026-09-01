@@ -39,6 +39,7 @@ test('serves a token-protected local admin preview endpoint', async () => {
     const html = await page.text()
     const token = html.match(/name="admin-token" content="([^"]+)"/)?.[1]
     assert.ok(token)
+    assert.match(html, /<option value="openclaw">OpenClaw<\/option>/)
     const response = await fetch(`${url}api/preview`, {
       method: 'POST',
       headers: { 'content-type': 'application/json', 'x-admin-token': token },

@@ -1,5 +1,7 @@
 # Benjamin 的 AI 笔记网站：小白使用手册
 
+> **已迁移：** 这个仓库保留笔记网站源码与历史。公开知识库的唯一入口是 <https://benjamindaoson.github.io/daoson_website/knowledge/>；原 Pages 地址会自动跳转过去。
+
 这是一个把本地 Markdown 笔记发布成网站的项目。你平时只需要写 Markdown；网站会自动按栏目、标签、时间归档整理它们。
 
 - 网站：<https://benjamindaoson.github.io/gitpagewebnote/>

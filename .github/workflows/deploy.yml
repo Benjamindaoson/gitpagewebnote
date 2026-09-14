@@ -1,11 +1,9 @@
-name: Deploy VitePress site to Pages
+name: Deploy knowledge-hub migration page
 
 on:
   push:
     branches: [main]
   workflow_dispatch:
-  schedule:
-    - cron: '15 0 * * *'
 
 permissions:
   contents: read
@@ -22,25 +20,19 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
-      - name: Set up Node
-        uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
-        with:
-          node-version: 24
-          cache: npm
       - name: Set up Pages
         uses: actions/configure-pages@983d7736d9b0ae728b81ab479565c72886d7745b # v5
-      - name: Install dependencies
-        run: npm ci
-      - name: Validate note content
-        run: npm run content:check
-      - name: Run automated tests
-        run: npm run test
-      - name: Build with VitePress
-        run: npm run docs:build
+      - name: Build migration page
+        shell: bash
+        run: |
+          mkdir -p _site
+          cat > _site/index.html <<'EOF'
+          <!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta http-equiv="refresh" content="0;url=https://benjamindaoson.github.io/daoson_website/knowledge/"><link rel="canonical" href="https://benjamindaoson.github.io/daoson_website/knowledge/"><title>知识库已迁移</title></head><body><p>知识库已迁移至 <a href="https://benjamindaoson.github.io/daoson_website/knowledge/">benjamindaoson.github.io/daoson_website/knowledge/</a>。</p></body></html>
+          EOF
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@7b1f4a764d45c48632c6b24a0339c27f5614fb0b # v4
         with:
-          path: site/.vitepress/dist
+          path: _site
 
   deploy:
     environment:

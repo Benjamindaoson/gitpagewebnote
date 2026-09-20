@@ -1,3 +1,8 @@
+> **MIGRATED / READ-ONLY**
+>
+> Active public notes and knowledge-base development has moved to `Benjamindaoson/daoson_website`.
+> This repository is retained for migration history and is an archival candidate; new content should not be added here.
+
 # Benjamin 的 AI 笔记网站：小白使用手册
 
 > **已迁移：** 这个仓库保留笔记网站源码与历史。公开知识库的唯一入口是 <https://benjamindaoson.github.io/daoson_website/knowledge/>；原 Pages 地址会自动跳转过去。

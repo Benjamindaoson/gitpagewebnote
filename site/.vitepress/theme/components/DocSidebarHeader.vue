@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useData, withBase } from 'vitepress'
+import noteIndex from '../../generated/note-index.json'
 
 const { page, frontmatter } = useData()
 const activeCategory = computed(() => {
@@ -10,14 +11,14 @@ const activeCategory = computed(() => {
   return relativePath.split('/')[0] || ''
 })
 
-const sections = [
+const sections = computed(() => [
   { label: '首页', href: '/', key: 'home', mark: 'H' },
   { label: 'Python', href: '/python/', key: 'python', mark: 'Py' },
   { label: 'LangChain', href: '/langchain/', key: 'langchain', mark: 'LC' },
   { label: 'LangGraph', href: '/langgraph/', key: 'langgraph', mark: 'LG' },
   { label: 'OpenClaw', href: '/openclaw/', key: 'openclaw', mark: 'OC' },
   { label: 'AI Coding', href: '/ai-coding/', key: 'ai-coding', mark: 'AI' }
-]
+].filter((section) => section.key === 'home' || noteIndex.notes.some((note) => note.category === section.key)))
 
 function openSearch() {
   if (typeof document === 'undefined') return
@@ -71,5 +72,8 @@ function openSearch() {
         <span>{{ item.label }}</span>
       </a>
     </nav>
+    <a class="course-sidebar-portfolio" href="https://benjamindaoson.github.io/daoson_website/">
+      返回个人官网 <span aria-hidden="true">↗</span>
+    </a>
   </div>
 </template>

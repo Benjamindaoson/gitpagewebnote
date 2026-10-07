@@ -16,12 +16,11 @@ test('site configuration defines the project Pages path and documentation UI', a
   assert.ok(config.themeConfig.sidebar['/openclaw/'])
   assert.ok(config.themeConfig.sidebar['/langgraph/'][0].items.some((item) => item.text === '00 · 环境配置'))
 
-  const personalSiteMenu = config.themeConfig.nav.find((item) => item.text === '个人主页')
-  assert.deepEqual(personalSiteMenu?.items, [
-    { text: '关于作者', link: 'https://benjamindaoson.github.io/daoson_website/about/' },
-    { text: '返回主站', link: 'https://benjamindaoson.github.io/daoson_website/' },
-    { text: '项目案例', link: 'https://benjamindaoson.github.io/daoson_website/projects/' }
-  ])
+  const personalSiteLink = config.themeConfig.nav.find((item) => item.text === '返回个人官网')
+  assert.deepEqual(personalSiteLink, {
+    text: '返回个人官网',
+    link: 'https://benjamindaoson.github.io/daoson_website/'
+  })
 })
 
 test('every top-level note category link has a generated category route', async () => {

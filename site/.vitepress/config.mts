@@ -6,11 +6,6 @@ import { createSeoHead } from '../../scripts/site-seo.mjs'
 const siteDir = fileURLToPath(new URL('..', import.meta.url))
 const base = '/gitpagewebnote/'
 const mainSiteUrl = 'https://benjamindaoson.github.io/daoson_website/'
-const mainSiteLinks = [
-  { text: '关于作者', link: `${mainSiteUrl}about/` },
-  { text: '返回主站', link: mainSiteUrl },
-  { text: '项目案例', link: `${mainSiteUrl}projects/` }
-]
 
 function wikiLinkPlugin(markdown: any, urls: Map<string, string>) {
   markdown.inline.ruler.before('emphasis', 'note-wiki-link', (state: any, silent: boolean) => {
@@ -36,6 +31,7 @@ export default async () => {
   const notes = await loadNotes({ siteDir })
   const network = buildKnowledgeNetwork(notes)
   const sidebar = buildSidebar(notes)
+  const publishedCategories = CATEGORY_OPTIONS.filter(({ value }) => notes.some((note) => note.category === value))
 
   for (const { value, label } of CATEGORY_OPTIONS) {
     sidebar[`/${value}/`][0].items.unshift({ text: `${label} 笔记首页`, link: `/${value}/` })
@@ -72,12 +68,8 @@ export default async () => {
       siteTitle: 'Benjamin 的 AI 笔记',
       nav: [
         { text: '首页', link: '/' },
-        { text: '个人主页', items: mainSiteLinks },
-        { text: 'Python', link: '/python/' },
-        { text: 'LangChain', link: '/langchain/' },
-        { text: 'LangGraph', link: '/langgraph/' },
-        { text: 'OpenClaw', link: '/openclaw/' },
-        { text: 'AI Coding', link: '/ai-coding/' },
+        { text: '返回个人官网', link: mainSiteUrl },
+        ...publishedCategories.map(({ value, label }) => ({ text: label, link: `/${value}/` })),
         {
           text: '学习索引',
           items: [

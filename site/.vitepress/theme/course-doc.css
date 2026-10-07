@@ -12,6 +12,7 @@
   --vp-c-brand-2: var(--course-accent-strong);
   --vp-c-brand-3: #3b82f6;
   --vp-code-block-bg: var(--course-code);
+  --vp-code-block-color: #e2e8f0;
 }
 
 .dark .course-doc-shell {
@@ -170,6 +171,23 @@
 .course-sidebar-global-nav {
   display: grid;
   gap: 2px;
+}
+
+.course-sidebar-portfolio {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 12px;
+  padding: 12px 10px;
+  border-top: 1px solid var(--vp-c-divider);
+  color: var(--vp-c-brand-1);
+  font-size: 13px;
+  font-weight: 650;
+}
+
+.course-sidebar-portfolio:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
 }
 
 .course-sidebar-global-link {

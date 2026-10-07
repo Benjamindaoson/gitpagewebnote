@@ -1,16 +1,21 @@
-> **MIGRATED / READ-ONLY**
->
-> Active public notes and knowledge-base development has moved to `Benjamindaoson/daoson_website`.
-> This repository is retained for migration history and is an archival candidate; new content should not be added here.
-
-# Benjamin 的 AI 笔记网站：小白使用手册
-
-> **已迁移：** 这个仓库保留笔记网站源码与历史。公开知识库的唯一入口是 <https://benjamindaoson.github.io/daoson_website/knowledge/>；原 Pages 地址会自动跳转过去。
+# Benjamin 的 AI 笔记网站：使用与发布指南
 
 这是一个把本地 Markdown 笔记发布成网站的项目。你平时只需要写 Markdown；网站会自动按栏目、标签、时间归档整理它们。
 
+笔记网站在本仓库独立维护和发布。个人官网通过导航链接到本站，本站仅保留简洁的“返回个人官网”入口。
+
+本站专注于公开知识内容，未来可按实际内容逐步收录技术博客、论文、视频、音频、电子书与自媒体外链；个人经历等官网信息由个人官网承载。当前页面仅展示已经发布的笔记，不预设尚无内容的栏目。
+
 - 网站：<https://benjamindaoson.github.io/gitpagewebnote/>
 - GitHub 仓库：<https://github.com/Benjamindaoson/gitpagewebnote>
+- 个人官网：<https://benjamindaoson.github.io/daoson_website/>
+
+## 目前可以阅读
+
+- [LangGraph 入门路径](https://benjamindaoson.github.io/gitpagewebnote/langgraph/)：环境配置、基础概念、控制流，共三篇。
+- [OpenClaw 源码陪读](https://benjamindaoson.github.io/gitpagewebnote/openclaw/)：从 README 建立系统地图，注明源码版本与来源。
+
+首页和导航按已发布内容展示栏目。Python、LangChain、AI Coding 的分类与导入能力已经保留，发布第一篇文章后会自动出现在导航中。
 
 > **第一次使用，只记住这一条：** 双击根目录的 `打开管理台.cmd`，在浏览器里选择笔记文件夹，填写信息，然后点击 **“导入并推送发布”**。不需要手动把笔记塞进 `site`，也不需要自己输入 Git 命令。
 
@@ -37,7 +42,7 @@ D:\我的笔记\LangGraph 状态管理\
 
 ## 第一次准备（只做一次）
 
-1. 安装 [Node.js 20 或更高版本](https://nodejs.org/)；安装时保留默认选项。
+1. 安装 [Node.js 24](https://nodejs.org/)，与自动构建使用的版本一致；安装时保留默认选项。
 2. 安装 Git for Windows；如果你已能向本仓库推送代码，说明已安装。
 3. 打开项目根目录：其中应有 `package.json`、`site`、`打开管理台.cmd`。
 4. 第一次在此目录的 PowerShell 中运行：
@@ -280,4 +285,4 @@ git status                              # 查看本次变更
 - `/sitemap.xml`：站点地图
 - `/knowledge-map/`：文章双链知识地图
 
-推送到 `main` 后，`.github/workflows/deploy.yml` 会校验内容、运行测试、构建并部署 GitHub Pages。不要在项目中保存 GitHub Token、密码或其他私密信息。
+提交 Pull Request 后，`.github/workflows/deploy.yml` 会校验内容、运行测试并构建网站，不会部署。推送到 `main` 后，同一工作流会将 `site/.vitepress/dist` 发布到独立的 GitHub Pages 地址；每日构建也会使到期的定时文章进入公开索引。不要在项目中保存 GitHub Token、密码或其他私密信息。

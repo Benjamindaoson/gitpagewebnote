@@ -1,7 +1,7 @@
 ---
 layout: home
-title: Benjamin 的 AI Engineering 笔记
-description: 系统学习 LangChain、LangGraph、Agent Systems 与 AI Coding 的工程化技术教材。
+title: Benjamin 的 AI 工程与源码笔记
+description: LangGraph 基础、OpenClaw 源码阅读与 AI 工程实践，按主题和阅读路径整理。
 ---
 
 <HomeLearningHub />

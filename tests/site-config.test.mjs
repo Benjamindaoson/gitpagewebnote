@@ -12,7 +12,9 @@ test('site configuration defines the project Pages path and documentation UI', a
   assert.equal(config.themeConfig.search.provider, 'local')
   assert.deepEqual(config.themeConfig.outline.level, [2, 3])
   assert.ok(config.themeConfig.nav.some((item) => item.text === '学习索引'))
-  assert.ok(config.themeConfig.nav.some((item) => item.text === 'OpenClaw'))
+  assert.ok(config.themeConfig.nav.some((item) => item.text === 'OpenClaw 电子书' && item.link === '/books/openclaw/'))
+  assert.ok(config.themeConfig.nav.some((item) => item.text === '书架' && item.link === '/'))
+  assert.ok(config.themeConfig.nav.some((item) => item.text === 'LangGraph 电子书' && item.link === '/books/langgraph/'))
   assert.ok(config.themeConfig.sidebar['/openclaw/'])
   assert.ok(config.themeConfig.sidebar['/langgraph/'][0].items.some((item) => item.text === '00 · 环境配置'))
 

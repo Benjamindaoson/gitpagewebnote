@@ -39,8 +39,8 @@ export default async () => {
 
   return defineConfig({
     lang: 'zh-CN',
-    title: 'Benjamin 的 AI 笔记',
-    description: 'AI、Python 与工程实践笔记',
+    title: 'Benjamin Taoson · 电子书架',
+    description: 'Benjamin Taoson 的公开技术电子书：LangGraph 入门、OpenClaw 源码阅读与持续更新的学习笔记。',
     base,
     cleanUrls: true,
     lastUpdated: true,
@@ -65,23 +65,22 @@ export default async () => {
     },
 
     themeConfig: {
-      siteTitle: 'Benjamin 的 AI 笔记',
+      siteTitle: 'Benjamin Taoson · 书架',
       nav: [
-        { text: '首页', link: '/' },
-        { text: '返回个人官网', link: mainSiteUrl },
-        ...publishedCategories.map(({ value, label }) => ({ text: label, link: `/${value}/` })),
+        { text: '书架', link: '/' },
+        { text: 'LangGraph 电子书', link: '/books/langgraph/' },
+        { text: 'OpenClaw 电子书', link: '/books/openclaw/' },
         {
           text: '学习索引',
           items: [
-            { text: '最近更新', link: '/updates/' },
+            { text: '全部笔记', link: '/updates/' },
             { text: '分类浏览', link: '/categories/' },
             { text: '标签浏览', link: '/tags/' },
-            { text: '年度归档', link: '/archive/' },
-            { text: '学习路径', link: '/learning-paths/' },
-            { text: '知识地图', link: '/knowledge-map/' },
-            { text: '我的学习', link: '/my-learning/' }
+            { text: '阅读路径', link: '/learning-paths/' },
+            { text: '知识地图', link: '/knowledge-map/' }
           ]
-        }
+        },
+        { text: '返回个人官网', link: mainSiteUrl }
       ],
       sidebar,
       search: {
@@ -117,7 +116,7 @@ export default async () => {
       ],
       footer: {
         message: `使用 Markdown 与 VitePress 构建 · <a href="${base}feed.xml">订阅 RSS</a> · <a href="https://github.com/Benjamindaoson/gitpagewebnote/issues/new/choose">反馈</a>`,
-        copyright: 'Copyright © 2026 Benjamin Daoson'
+        copyright: 'Copyright © 2026 Benjamin Taoson'
       }
     }
   })

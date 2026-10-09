@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useData, withBase } from 'vitepress'
+import { books } from '../../../../scripts/book-catalog.mjs'
 
 const { page, frontmatter } = useData()
 
@@ -11,6 +12,7 @@ const category = computed(() => {
   return relativePath.split('/')[0] || ''
 })
 
+const parentBook = computed(() => books.find((book) => book.chapters.some((chapter) => chapter.source === page.value.relativePath)))
 const categoryLabel = computed(() => {
   const labels: Record<string, string> = {
     python: 'Python',
@@ -25,7 +27,7 @@ const categoryLabel = computed(() => {
 
 <template>
   <div v-if="category" class="course-doc-breadcrumb" aria-label="面包屑导航">
-    <a :href="withBase(`/${category}/`)">{{ categoryLabel }} 教程</a>
+    <a :href="withBase(parentBook?.href || `/${category}/`)">{{ parentBook ? "←《" + parentBook.title + "》目录" : categoryLabel + " 教程" }}</a>
     <span aria-hidden="true">›</span>
     <span>{{ page.title }}</span>
   </div>

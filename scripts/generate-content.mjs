@@ -3,6 +3,7 @@ import { dirname, resolve } from 'node:path'
 import { pathToFileURL } from 'node:url'
 import { buildKnowledgeNetwork, groupNotes, loadNotes, validateNotes } from './content-index.mjs'
 import { loadPublishLog } from './publish-log.mjs'
+import { books } from './book-catalog.mjs'
 
 function asPublicNote(note) {
   return {
@@ -81,7 +82,7 @@ function createFeed(notes, siteUrl) {
 }
 
 function createSitemap(notes, siteUrl) {
-  const staticPaths = ['/', '/updates/', '/categories/', '/tags/', '/archive/', '/learning-paths/', '/knowledge-map/', '/my-learning/', '/publish-log/']
+  const staticPaths = ['/', '/updates/', '/categories/', '/tags/', '/archive/', '/learning-paths/', '/knowledge-map/', '/my-learning/', '/publish-log/', ...books.map((book) => book.href)]
   const urls = [
     ...staticPaths.map((path) => ({ path, date: '' })),
     ...notes.map((note) => ({ path: note.url, date: note.updated }))

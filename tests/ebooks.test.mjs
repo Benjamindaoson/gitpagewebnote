@@ -47,6 +47,7 @@ test('each e-book is a valid EPUB3 structure with navigable, original XHTML chap
       const files = unzipLocal(bin)
       assert.ok(files.has('META-INF/container.xml'))
       assert.match(files.get('OEBPS/content.opf').toString(), /version="3.0"/)
+      assert.match(files.get('OEBPS/content.opf').toString(), /<meta property="dcterms:modified">\d{4}-\d\d-\d\dT00:00:00Z<\/meta>/)
       assert.match(files.get('OEBPS/nav.xhtml').toString(), /epub:type="toc"/)
       for (const [index, chapter] of book.chapters.entries()) {
         const xhtml = files.get('OEBPS/chapter-' + (index + 1) + '.xhtml')?.toString()

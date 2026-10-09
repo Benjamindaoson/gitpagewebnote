@@ -69,7 +69,10 @@ function markdownToHtml(source, book, titles) {
   return out.join('\n')
 }
 function metadata(book, documents) {
-  const updated = documents.map((doc) => String(doc.data.updated || doc.data.date).slice(0, 10)).sort().at(-1)
+  const updated = documents.map((doc) => {
+    const value = doc.data.updated || doc.data.date
+    return value instanceof Date ? value.toISOString().slice(0, 10) : String(value).slice(0, 10)
+  }).sort().at(-1)
   const manifest = book.chapters.map((_ch, i) => '<item id="ch' + i + '" href="chapter-' + (i + 1) + '.xhtml" media-type="application/xhtml+xml"/>').join('')
   const spine = book.chapters.map((_ch, i) => '<itemref idref="ch' + i + '"/>').join('')
   return header + '<package xmlns="http://www.idpf.org/2007/opf" version="3.0" unique-identifier="id" xml:lang="zh-CN"><metadata xmlns:dc="http://purl.org/dc/elements/1.1/"><dc:identifier id="id">urn:benjamintaoson:' + book.id + '</dc:identifier><dc:title>' + escape(book.title) + '</dc:title><dc:creator>Benjamin Taoson</dc:creator><dc:language>zh-CN</dc:language><dc:description>' + escape(book.summary) + '</dc:description><meta property="dcterms:modified">' + updated + 'T00:00:00Z</meta></metadata><manifest><item id="toc" href="nav.xhtml" media-type="application/xhtml+xml" properties="nav"/><item id="title" href="title.xhtml" media-type="application/xhtml+xml"/><item id="css" href="book.css" media-type="text/css"/>' + manifest + '</manifest><spine><itemref idref="title"/>' + spine + '</spine></package>'

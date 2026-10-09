@@ -13,9 +13,10 @@
     "admin": "node scripts/admin-server.mjs",
     "content:report": "node scripts/content-report.mjs",
     "content:backup": "node scripts/backup-notes.mjs",
-    "docs:dev": "npm run content:check && npm run content:generate && vitepress dev site",
-    "docs:build": "npm run content:check && npm run content:generate && vitepress build site",
-    "docs:preview": "vitepress preview site"
+    "docs:dev": "npm run content:check && npm run content:generate && npm run books:build && vitepress dev site",
+    "docs:build": "npm run content:check && npm run content:generate && npm run books:build && vitepress build site",
+    "docs:preview": "vitepress preview site",
+    "books:build": "node scripts/generate-ebooks.mjs"
   },
   "devDependencies": {
     "gray-matter": "^4.0.3",

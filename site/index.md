@@ -1,7 +1,7 @@
 ---
 layout: home
-title: Benjamin 的 AI 工程与源码笔记
-description: LangGraph 基础、OpenClaw 源码阅读与 AI 工程实践，按主题和阅读路径整理。
+title: Benjamin Taoson · 知识书架
+description: 在线阅读或下载 LangGraph 与 OpenClaw 技术电子书。由已经发布的真实笔记持续整理更新。
 ---
 
-<HomeLearningHub />
+<BookShelf />

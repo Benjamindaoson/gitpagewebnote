@@ -148,3 +148,36 @@ a:hover .ebook-cover { transform: translateY(-3px) rotate(-.7deg); }
 }
 @media (max-width: 360px) { .ebook-grid { grid-template-columns: 1fr; } .ebook-card-cover-link { width: 75%; } .ebook-cover-title { font-size: 25px; } }
 @media (prefers-reduced-motion: reduce) { .ebook-cover, .ebook-card { transition: none; } }
+
+/* Project-first bookshelf: navigation is the title; covers start immediately below it. */
+.VPHome .VPHomeContent > .container { padding-top: 0; }
+.ebook-library .library-collection { padding-top: 16px; }
+.ebook-library .library-toolbar { margin: 0 0 18px; }
+.ebook-library .library-toolbar h1 {
+  margin: 0; color: var(--library-ink);
+  font-size: clamp(24px, 2.45vw, 32px); line-height: 1.35;
+  font-weight: 680; letter-spacing: -.045em;
+}
+.ebook-library .library-toolbar h1 span { font-size: 13px; font-weight: 500; }
+.ebook-library .ebook-grid--short {
+  grid-template-columns: repeat(2, minmax(0, 370px));
+  gap: clamp(16px, 3vw, 32px);
+}
+.ebook-library .ebook-card { padding: 19px; }
+.ebook-library .ebook-card-cover-link { margin-bottom: 18px; }
+.ebook-detail { padding-top: 18px; }
+.ebook-detail-hero { margin: 20px 0 34px; }
+@media (max-width: 680px) {
+  .VPHome .VPHomeContent > .container { padding-top: 0; }
+  .ebook-library .library-collection { padding-top: 10px; }
+  .ebook-library .library-toolbar { margin-bottom: 13px; }
+  .ebook-library .library-toolbar h1 { font-size: 23px; }
+  .ebook-library .ebook-grid--short { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+  .ebook-library .ebook-card { padding: 10px; }
+  .ebook-library .ebook-card-cover-link { margin-bottom: 12px; }
+  .ebook-detail { padding-top: 16px; }
+  .ebook-detail-hero { margin-top: 18px; }
+}
+@media (max-width: 360px) {
+  .ebook-library .ebook-grid--short { grid-template-columns: 1fr; }
+}

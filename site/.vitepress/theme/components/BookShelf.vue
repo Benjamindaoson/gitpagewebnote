@@ -16,33 +16,19 @@ const filteredBooks = computed(() => books.filter((book) => {
 
 <template>
   <main class="ebook-library">
-    <header class="library-heading">
-      <p class="library-eyebrow">BENJAMIN TAOSON / READING LIBRARY</p>
-      <div class="library-heading-grid">
-        <div>
-          <h1>知识书架<span class="library-title-dot">.</span></h1>
-          <p class="library-lead">把技术笔记整理成可以一章章读的电子书。这里展示已公开的作品，内容持续更新，免费阅读。</p>
-        </div>
-        <a class="library-back-link" href="https://benjamindaoson.github.io/daoson_website/">
-          返回 Benjamin 的个人官网 <span aria-hidden="true">↗</span>
-        </a>
-      </div>
-    </header>
-
     <section class="library-collection" aria-labelledby="library-works-title">
       <div class="library-toolbar">
         <div>
-          <p class="library-eyebrow">THE COLLECTION</p>
-          <h2 id="library-works-title">已上架的作品 <span>{{ books.length.toString().padStart(2, '0') }}</span></h2>
+          <h1 id="library-works-title">已上架的作品 <span>{{ books.length.toString().padStart(2, '0') }}</span></h1>
         </div>
-        <label class="library-search-label">
+        <label v-if="books.length >= 6" class="library-search-label">
           <span class="sr-only">搜索书籍与章节</span>
           <span aria-hidden="true">⌕</span>
           <input v-model="search" type="search" placeholder="搜索书名、主题或章节" autocomplete="off" />
         </label>
       </div>
 
-      <div class="library-filter" aria-label="按主题筛选书籍">
+      <div v-if="books.length >= 6" class="library-filter" aria-label="按主题筛选书籍">
         <button
           v-for="topic in topics" :key="topic" type="button"
           :aria-pressed="activeTopic === topic"
@@ -50,7 +36,7 @@ const filteredBooks = computed(() => books.filter((book) => {
         >{{ topic }}</button>
       </div>
 
-      <div v-if="filteredBooks.length" class="ebook-grid">
+      <div v-if="filteredBooks.length" class="ebook-grid" :class="{ 'ebook-grid--short': filteredBooks.length < 3 }">
         <article v-for="book in filteredBooks" :key="book.id" class="ebook-card">
           <a class="ebook-card-cover-link" :href="withBase(book.href)" :aria-label="'打开《' + book.title + '》'">
             <div class="ebook-cover" :style="{ '--cover-top': book.coverTop, '--cover-bottom': book.coverBottom, '--cover-accent': book.accent }">
@@ -76,9 +62,6 @@ const filteredBooks = computed(() => books.filter((book) => {
       </div>
       <p v-else class="library-empty">没有找到匹配的作品。试试其他关键词，或切换到“全部”。</p>
     </section>
-    <footer class="library-tail">
-      <p>这些小册由已公开的笔记整理，不把计划中的章节当作成品。新的文章和书籍会在完成后加入书架。</p>
-      <a :href="withBase('/updates/')">按时间浏览原始笔记 <span aria-hidden="true">↗</span></a>
-    </footer>
+
   </main>
 </template>

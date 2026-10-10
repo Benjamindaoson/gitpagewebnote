@@ -65,11 +65,9 @@ export default async () => {
     },
 
     themeConfig: {
-      siteTitle: 'Benjamin Taoson · 书架',
+      siteTitle: 'Benjamin Taoson · AI 书架',
       nav: [
         { text: '书架', link: '/' },
-        { text: 'LangGraph 电子书', link: '/books/langgraph/' },
-        { text: 'OpenClaw 电子书', link: '/books/openclaw/' },
         {
           text: '学习索引',
           items: [
